@@ -285,10 +285,20 @@
             text-align: left;
             border-bottom: 1px solid var(--border-color);
             font-size: 0.85rem;
+            transition: all 0.3s ease;
         }
         
         th { background-color: var(--primary); color: var(--nav-active-text); font-weight: 600; }
         tr:hover { background-color: var(--card-hover-bg); }
+
+        /* Estilo para Pedidos Concluídos */
+        .linha-concluida {
+            opacity: 0.55; /* Deixa transparente */
+            background-color: var(--icon-bg); /* Fundo mais apagado */
+        }
+        .linha-concluida:hover {
+            opacity: 0.8; /* Acende um pouco ao passar o mouse */
+        }
 
         .badge {
             padding: 4px 10px;
@@ -865,7 +875,8 @@ Agradecemos seu pedido, qualquer dúvida estou a disposição.`;
             let encontrouAlgumPedido = false;
 
             categoriasOrdem.forEach(cat => {
-                const pedidosDaCategoria = pedidos.map((p, i) => ({ ...p, originalIndex: i }))
+                // Mapeia e filtra
+                let pedidosDaCategoria = pedidos.map((p, i) => ({ ...p, originalIndex: i }))
                     .filter(pedido => {
                         if (pedido.categoria !== cat) return false;
                         const texto = `${pedido.solicitante} ${pedido.categoria} ${pedido.tipo} ${pedido.livro}`.toLowerCase();
@@ -875,6 +886,12 @@ Agradecemos seu pedido, qualquer dúvida estou a disposição.`;
 
                 if (pedidosDaCategoria.length > 0) {
                     encontrouAlgumPedido = true;
+
+                    // ORDENAÇÃO: Coloca os Concluídos no final da lista
+                    pedidosDaCategoria.sort((a, b) => {
+                        const pesos = { 'pendente': 1, 'andamento': 2, 'concluido': 3 };
+                        return (pesos[a.status] || 0) - (pesos[b.status] || 0);
+                    });
 
                     const titulo = document.createElement('h3');
                     titulo.className = 'categoria-titulo';
@@ -916,6 +933,11 @@ Agradecemos seu pedido, qualquer dúvida estou a disposição.`;
                         }
 
                         const tr = document.createElement('tr');
+                        // Aplica a classe se for concluído para escurecer a linha
+                        if (pedido.status === 'concluido') {
+                            tr.className = 'linha-concluida';
+                        }
+                        
                         tr.innerHTML = `
                             <td>
                                 <strong>${pedido.solicitante}</strong>
