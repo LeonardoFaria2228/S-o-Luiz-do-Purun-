@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Extrator de Texto - Cartório São Luiz do Purunã</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        /* Variáveis de Cores (Tema Claro Padrão) */
+        :root {
+            --primary: #2d2a26; 
+            --primary-hover: #4a453f;
+            --accent: #8b7355; 
+            --secondary: #059669;
+            
+            --bg-color: #f4f4f4;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #dddddd;
+            --tabs-bg: #e5e5e5;
+            
+            --header-bg: #b5b5b5;
+            --header-text: #3b2f2f;
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Variáveis de Cores (Tema Escuro) */
+        [data-theme="dark"] {
+            --primary: #dcd0c2; 
+            --primary-hover: #ffffff;
+            --accent: #bc9c73; 
+            --secondary: #10b981;
+            
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --input-bg: #2a2a2a;
+            
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border-color: #333333;
+            --tabs-bg: #2a2a2a;
+            
+            --header-bg: #161514;
+            --header-text: #e0e0e0;
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; width: 100vw; overflow: hidden; transition: background 0.3s ease, color 0.3s ease; }
+
+        /* Barra Lateral */
+        .sidebar { width: 400px; min-width: 320px; background-color: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; z-index: 1000; overflow-y: auto; transition: background-color 0.3s; }
+        
+        .header { padding: 22px 20px; background: var(--header-bg); color: var(--header-text); position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-md); border-bottom: 2px solid var(--primary); }
+        .header-content { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .header-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--header-text);}
+        .header-logo-svg { width: 44px; height: 44px; flex-shrink: 0; }
+        .header-text h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 800; line-height: 1.2; margin-bottom: 2px; color: var(--header-text); }
+        .header-divider { width: 100%; height: 2px; background: var(--accent); margin: 6px 0; border-radius: 2px; }
+        .header-text p { font-size: 0.75rem; opacity: 0.85; font-weight: 500; }
+
+        .btn-theme { background: rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color); color: var(--text-main); width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
+        .btn-theme:hover { background: var(--accent); color: white; }
+
+        .form-section { padding: 24px 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        .form-group select { width: 100%; padding: 10px 12px; background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 6px; outline: none; font-size: 0.9rem; color: var(--text-main); transition: 0.2s; cursor: pointer; }
+        .form-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.15); }
+        select option { background-color: var(--card-bg); color: var(--text-main); }
+
+        /* Área de Drag & Drop */
+        .drop-zone { border: 2px dashed var(--border-color); border-radius: 8px; padding: 30px 20px; text-align: center; background-color: rgba(0,0,0,0.02); cursor: pointer; transition: 0.3s; margin-bottom: 20px; }
+        .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background-color: rgba(139, 115, 85, 0.05); }
+        .drop-zone i { font-size: 2.5rem; color: var(--accent); margin-bottom: 10px; }
+        .drop-zone p { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; margin-bottom: 5px; }
+        .drop-zone span { font-size: 0.75rem; color: var(--text-muted); opacity: 0.8; }
+        #file-input { display: none; }
+
+        #file-list { margin-bottom: 20px; font-size: 0.85rem; }
+        .file-item { display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 6px; }
+        .file-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80%; }
+        .file-item i { color: #ef4444; cursor: pointer; }
+
+        .btn-add { width: 100%; padding: 14px; background-color: var(--primary); color: var(--bg-color); border: none; border-radius: 6px; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; margin-top: auto; }
+        .btn-add:hover { opacity: 0.9; }
+        .btn-add:disabled { background-color: var(--border-color); color: var(--text-muted); cursor: not-allowed; }
+
+        /* Progresso */
+        .progress-container { display: none; margin-top: 15px; }
+        .progress-bar { width: 100%; height: 8px; background-color: var(--border-color); border-radius: 4px; overflow: hidden; margin-bottom: 5px; }
+        .progress-fill { height: 100%; background-color: var(--secondary); width: 0%; transition: width 0.3s; }
+        .progress-status { font-size: 0.75rem; color: var(--text-muted); text-align: center; font-weight: 600; }
+
+        /* Área Principal (Texto Extraído) */
+        .main-content { flex-grow: 1; padding: 32px 40px; display: flex; flex-direction: column; background-color: var(--bg-color); }
+        
+        .result-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; box-shadow: var(--shadow-md); flex-grow: 1; display: flex; flex-direction: column; }
+        .result-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px; }
+        .result-title { font-size: 1.3rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; font-family: 'Playfair Display', serif; }
+        
+        /* Textarea */
+        textarea { flex-grow: 1; width: 100%; resize: none; padding: 16px; border: 1px solid var(--border-color); border-radius: 8px; background-color: var(--input-bg); color: var(--text-main); font-size: 0.95rem; font-family: 'Inter', monospace; line-height: 1.5; outline: none; transition: border-color 0.2s; }
+        textarea:focus { border-color: var(--accent); }
+
+        .action-buttons { display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end; }
+        .btn-action { padding: 10px 16px; border-radius: 6px; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; border: none; }
+        .btn-copy { background-color: var(--primary); color: var(--bg-color); } .btn-copy:hover { opacity: 0.9; }
+        .btn-download { background-color: var(--tabs-bg); color: var(--text-main); } .btn-download:hover { background-color: var(--border-color); }
+        .btn-clear { background-color: transparent; border: 1px solid #ef4444; color: #ef4444; } .btn-clear:hover { background-color: rgba(239, 68, 68, 0.1); }
+
+        .toast { position: fixed; bottom: 20px; right: 20px; background-color: var(--secondary); color: white; padding: 12px 20px; border-radius: 6px; display: none; z-index: 2000; font-size: 0.85rem; font-weight: 600; box-shadow: var(--shadow-md); }
+
+        @media (max-width: 768px) { 
+            body { flex-direction: column; } 
+            .sidebar { width: 100%; height: auto; min-width: 100%; } 
+            .main-content { padding: 16px; height: 60vh; }
+            .action-buttons { flex-wrap: wrap; justify-content: stretch; }
+            .btn-action { flex: 1; justify-content: center; }
+        }
+    </style>
+
+    <!-- Importação do Tesseract.js (Para OCR) -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <!-- Importação do PDF.js (Para converter PDF em imagem) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="header">
+            <div class="header-content">
+                <a href="index.html" class="header-brand" title="Voltar ao Painel">
+                    <svg class="header-logo-svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M 20 40 L 18 85 Q 35 92 52 82" />
+                        <path d="M 26 42 L 24 75 Q 35 81 48 74" />
+                        <path d="M 32 45 L 30 65 Q 38 69 46 67" />
+                        <path d="M 52 42 Q 62 32 72 40 L 78 58 Q 65 68 50 64" />
+                        <path d="M 52 74 Q 68 80 84 66 L 76 42" />
+                        <path d="M 54 84 Q 72 90 90 74 L 82 48" />
+                        <path d="M 28 18 L 44 23 L 44 30 L 50 35 L 60 58 L 44 46 L 38 42 L 32 28 Z" fill="currentColor" stroke="none" />
+                        <circle cx="44" cy="39" r="3.5" fill="var(--header-bg)" stroke="none" />
+                        <line x1="44" y1="42" x2="56" y2="55" stroke="var(--header-bg)" stroke-width="2.5" />
+                    </svg>
+                    <div class="header-text">
+                        <h2>OCR - Extrator</h2>
+                        <div class="header-divider"></div>
+                        <p>Digitalização de Texto</p>
+                    </div>
+                </a>
+                <button class="btn-theme" onclick="toggleTheme()" id="theme-btn">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-section">
+            
+            <div class="form-group">
+                <label for="lang-select">Idioma do Documento</label>
+                <select id="lang-select">
+                    <option value="por">Português (Brasil)</option>
+                    <option value="eng">Inglês</option>
+                </select>
+            </div>
+
+            <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Clique ou arraste arquivos aqui</p>
+                <span>Formatos aceitos: PDF, JPG, PNG, JPEG</span>
+                <input type="file" id="file-input" multiple accept="image/png, image/jpeg, image/jpg, application/pdf">
+            </div>
+
+            <div id="file-list"></div>
+
+            <div class="progress-container" id="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-status" id="progress-status">Preparando motor OCR...</div>
+            </div>
+
+            <button class="btn-add" id="btn-process" onclick="processarArquivos()" disabled>
+                <i class="fa-solid fa-microchip"></i> Iniciar Extração de Texto
+            </button>
+
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="result-card">
+            <div class="result-header">
+                <h3 class="result-title"><i class="fa-solid fa-file-lines"></i> Texto Extraído</h3>
+            </div>
+            
+            <textarea id="result-text" placeholder="O texto extraído dos seus documentos aparecerá aqui. Você pode editar este campo livremente após a leitura..."></textarea>
+
+            <div class="action-buttons">
+                <button class="btn-action btn-clear" onclick="limparTexto()"><i class="fa-solid fa-eraser"></i> Limpar</button>
+                <button class="btn-action btn-download" onclick="baixarTxt()"><i class="fa-solid fa-download"></i> Baixar .txt</button>
+                <button class="btn-action btn-copy" onclick="copiarTexto()"><i class="fa-solid fa-copy"></i> Copiar Texto</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Ação concluída!</div>
+
+    <script>
+        // Configuração PDF.js
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        // Variáveis Globais
+        let arquivosSelecionados = [];
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+        const btnProcess = document.getElementById('btn-process');
+        const resultText = document.getElementById('result-text');
+        
+        // UI de Progresso
+        const progressContainer = document.getElementById('progress-container');
+        const progressFill = document.getElementById('progress-fill');
+        const progressStatus = document.getElementById('progress-status');
+
+        // --- SISTEMA DE TEMA CLARO/ESCURO ---
+        function toggleTheme() {
+            let theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-icon');
+            if (theme === 'dark') icon.className = 'fa-solid fa-sun';
+            else icon.className = 'fa-solid fa-moon';
+        }
+
+        window.onload = () => {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            updateThemeIcon(currentTheme);
+        };
+
+        // --- DRAG AND DROP & SELEÇÃO DE ARQUIVOS ---
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        function handleFiles(files) {
+            for (let file of files) {
+                if (file.type.match('image.*') || file.type === 'application/pdf') {
+                    arquivosSelecionados.push(file);
+                } else {
+                    mostrarToast("Formato não suportado: " + file.name);
+                }
+            }
+            atualizarListaArquivos();
+        }
+
+        function atualizarListaArquivos() {
+            fileList.innerHTML = '';
+            arquivosSelecionados.forEach((file, index) => {
+                const div = document.createElement('div');
+                div.className = 'file-item';
+                div.innerHTML = `
+                    <span><i class="${file.type === 'application/pdf' ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}" style="color: var(--accent); margin-right: 6px;"></i> ${file.name}</span>
+                    <i class="fa-solid fa-trash" onclick="removerArquivo(${index})"></i>
+                `;
+                fileList.appendChild(div);
+            });
+            btnProcess.disabled = arquivosSelecionados.length === 0;
+        }
+
+        function removerArquivo(index) {
+            arquivosSelecionados.splice(index, 1);
+            atualizarListaArquivos();
+        }
+
+        // --- LÓGICA DO OCR (TESSERACT + PDF.JS) ---
+        function atualizarProgresso(texto, porcentagem) {
+            progressStatus.innerText = texto;
+            progressFill.style.width = `${porcentagem}%`;
+        }
+
+        // --- FUNÇÃO DE FORMATAÇÃO ATPV-E ---
+        function formatarDadosATPVE(textoRaw, nomeArquivo) {
+            const dados = {};
+            
+            // Expressões regulares para encontrar os campos e capturar os valores seguintes
+            const matchChassi = textoRaw.match(/CHASSI[\s\S]*?([A-Z0-9]{17})/i);
+            dados.Chassi = matchChassi ? matchChassi[1] : "Não identificado";
+            
+            const matchPlaca = textoRaw.match(/PLACA[\s\S]*?([A-Z]{3}[0-9][A-Z0-9][0-9]{2}|[A-Z]{3}-?[0-9]{4})/i);
+            dados.Placa = matchPlaca ? matchPlaca[1] : "Não identificado";
+
+            const matchRenavam = textoRaw.match(/C[OÓ]DIGO RENAVAM[\s\S]*?(\d{9,11})/i);
+            dados.Renavam = matchRenavam ? matchRenavam[1] : "Não identificado";
+
+            const matchAnoFab = textoRaw.match(/ANO FABRICA[CÇ][AÃ]O[\s\S]*?(\d{4})/i);
+            dados.AnoFabricacao = matchAnoFab ? matchAnoFab[1] : "Não identificado";
+
+            const matchAnoMod = textoRaw.match(/ANO MODELO[\s\S]*?(\d{4})/i);
+            dados.AnoModelo = matchAnoMod ? matchAnoMod[1] : "Não identificado";
+            
+            const matchMarca = textoRaw.match(/MARCA\s*\/?\s*MODELO\s*\/?\s*VERS[AÃ]O[\s\S]*?\n([^\n]+)/i);
+            dados.MarcaModelo = matchMarca ? matchMarca[1].trim() : "Não identificado";
+
+            const matchValor = textoRaw.match(/Valor declarado na venda:[\s\S]*?(R\$\s*[\d\.,]+)/i);
+            dados.ValorVenda = matchValor ? matchValor[1] : "Não identificado";
+
+            const matchATPVE = textoRaw.match(/N[UÚ]MERO ATPVE[\s\S]*?(\d{15})/i);
+            dados.NumeroATPVE = matchATPVE ? matchATPVE[1] : "Não identificado";
+
+            // Retorna o texto formatado padronizado
+            return `========================================
+📄 DOCUMENTO: ${nomeArquivo}
+========================================
+📋 DADOS EXTRAÍDOS:
+• Chassi: ${dados.Chassi}
+• Placa: ${dados.Placa}
+• Renavam: ${dados.Renavam}
+• Marca/Modelo: ${dados.MarcaModelo}
+• Ano Fab/Mod: ${dados.AnoFabricacao} / ${dados.AnoModelo}
+• Número ATPV-e: ${dados.NumeroATPVE}
+• Valor Declarado: ${dados.ValorVenda}
+----------------------------------------
+📝 TEXTO ORIGINAL BRUTO:
+${textoRaw}
+========================================\n\n`;
+        }
+
+        async function processarArquivos() {
+            if (arquivosSelecionados.length === 0) return;
+            
+            const lang = document.getElementById('lang-select').value;
+            
+            // UI Setup
+            btnProcess.disabled = true;
+            dropZone.style.pointerEvents = 'none';
+            progressContainer.style.display = 'block';
+            let textoAcumulado = resultText.value ? resultText.value + "\n\n" : "";
+
+            try {
+                // Instancia o Worker do Tesseract
+                atualizarProgresso("Carregando motor OCR...", 10);
+                const worker = await Tesseract.createWorker(lang, 1, {
+                    logger: m => {
+                        if (m.status === 'recognizing text') {
+                            atualizarProgresso(`Lendo texto...`, Math.round(m.progress * 100));
+                        } else {
+                            atualizarProgresso(m.status, 20);
+                        }
+                    }
+                });
+
+                // Processa cada arquivo
+                for (let i = 0; i < arquivosSelecionados.length; i++) {
+                    let file = arquivosSelecionados[i];
+                    atualizarProgresso(`Processando arquivo ${i + 1}/${arquivosSelecionados.length}`, 0);
+                    
+                    let textoDoDocumento = ""; // Variável para juntar todas as páginas do doc atual
+
+                    if (file.type === 'application/pdf') {
+                        // PDF precisa ser renderizado em Canvas primeiro
+                        const arrayBuffer = await file.arrayBuffer();
+                        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                        
+                        for(let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                            atualizarProgresso(`PDF ${i+1}: Renderizando pág ${pageNum}/${pdf.numPages}...`, 0);
+                            const page = await pdf.getPage(pageNum);
+                            const viewport = page.getViewport({scale: 2.0}); // Escala 2x para melhor qualidade OCR
+                            
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+                            
+                            await page.render({canvasContext: ctx, viewport: viewport}).promise;
+                            
+                            // Manda o canvas da página para o Tesseract
+                            atualizarProgresso(`PDF ${i+1}: Lendo pág ${pageNum}/${pdf.numPages}...`, 0);
+                            const ret = await worker.recognize(canvas);
+                            textoDoDocumento += ret.data.text + "\n";
+                        }
+                    } else {
+                        // Imagem direta pro Tesseract
+                        const ret = await worker.recognize(file);
+                        textoDoDocumento += ret.data.text + "\n";
+                    }
+
+                    // Aplica a formatação no texto completo do documento antes de exibir
+                    textoAcumulado += formatarDadosATPVE(textoDoDocumento, file.name);
+                    resultText.value = textoAcumulado; // Atualiza a tela em tempo real
+                }
+
+                await worker.terminate();
+                atualizarProgresso("Extração concluída!", 100);
+                mostrarToast("Textos extraídos com sucesso!");
+
+            } catch (error) {
+                console.error(error);
+                mostrarToast("Ocorreu um erro no processamento.");
+                atualizarProgresso("Erro no processo.", 0);
+            } finally {
+                // Reset da UI
+                setTimeout(() => { progressContainer.style.display = 'none'; }, 2000);
+                btnProcess.disabled = false;
+                dropZone.style.pointerEvents = 'auto';
+                arquivosSelecionados = []; // Limpa a fila
+                atualizarListaArquivos();
+            }
+        }
+
+        // --- AÇÕES DO RESULTADO ---
+        function copiarTexto() {
+            if (!resultText.value) return mostrarToast("Não há texto para copiar.");
+            navigator.clipboard.writeText(resultText.value).then(() => mostrarToast("Texto copiado!"));
+        }
+
+        function limparTexto() {
+            if(confirm("Apagar todo o texto extraído?")) {
+                resultText.value = "";
+            }
+        }
+
+        function baixarTxt() {
+            if (!resultText.value) return mostrarToast("Não há texto para baixar.");
+            const blob = new Blob([resultText.value], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "Extracao_OCR_Cartorio.txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function mostrarToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>

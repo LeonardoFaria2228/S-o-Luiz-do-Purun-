@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Certidões - Serviço Distrital de São Luiz do Purunã</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        /* Variáveis de Cores (Tema Claro Padrão) */
+        :root {
+            --primary: #2d2a26; 
+            --primary-hover: #4a453f;
+            --accent: #8b7355; 
+            
+            --bg-color: #f4f4f4;
+            --body-grad-start: #ffffff;
+            --body-grad-end: #ebebeb;
+            
+            --card-bg: #ffffff;
+            --card-hover-bg: #fafafa;
+            
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #dddddd;
+            
+            --header-bg: #b5b5b5;
+            --header-text: #3b2f2f;
+            
+            --nav-bg: #f9f9f9;
+            --nav-hover: #eeeeee;
+            --nav-active-text: #ffffff;
+            
+            --icon-bg: #f4f4f4;
+            --cert-icon-bg: #f0ede8;
+            
+            --footer-bg: #dbdbdb;
+            --footer-text: #444444;
+
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Variáveis de Cores (Tema Escuro) */
+        [data-theme="dark"] {
+            --primary: #dcd0c2; 
+            --primary-hover: #ffffff;
+            --accent: #bc9c73; 
+            
+            --bg-color: #121212;
+            --body-grad-start: #1a1a1a;
+            --body-grad-end: #121212;
+            
+            --card-bg: #1e1e1e;
+            --card-hover-bg: #252525;
+            
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border-color: #333333;
+            
+            --header-bg: #161514;
+            --header-text: #e0e0e0;
+            
+            --nav-bg: #1a1a1a;
+            --nav-hover: #2a2a2a;
+            --nav-active-text: #121212;
+            
+            --icon-bg: #2a2a2a;
+            --cert-icon-bg: #2a2a2a;
+            
+            --footer-bg: #161514;
+            --footer-text: #888888;
+
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(circle at top right, var(--body-grad-start) 0%, var(--body-grad-end) 100%);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- BARRA TOPO DISCRETA --- */
+        .top-info-bar {
+            background-color: #1a1816;
+            color: #d1c7bd;
+            font-size: 0.75rem;
+            padding: 6px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .top-info-item { display: flex; align-items: center; gap: 8px; }
+        .weather-container { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .top-info-item i { color: #bc9c73; font-size: 0.8rem; }
+        .weather-divider { color: #555; margin: 0 2px; }
+
+        /* --- CABEÇALHO --- */
+        .site-header {
+            background-color: var(--header-bg); 
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 3px solid var(--primary);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .header-titles { display: flex; flex-direction: column; text-align: center; }
+        .header-titles h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--header-text);
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+            transition: color 0.3s ease;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background-color: var(--nav-bg);
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            flex-wrap: wrap;
+        }
+        .nav-item {
+            padding: 14px 24px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-item:first-child { border-left: 1px solid var(--border-color); }
+        .nav-item:hover { background-color: var(--nav-hover); }
+        .nav-item.active { background-color: var(--primary); color: var(--nav-active-text); }
+        .nav-item.wpp:hover { color: #25D366; }
+        .theme-toggle-btn { cursor: pointer; }
+
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .container {
+            max-width: 1300px;
+            margin: 35px auto;
+            padding: 0 20px;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 35px 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .section-title i { color: var(--accent); }
+
+        .categoria-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin: 30px 0 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        /* --- ESTILOS DO FORMULÁRIO --- */
+        .form-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: var(--shadow-md);
+            border-top: 4px solid var(--accent);
+            margin-bottom: 40px;
+        }
+        
+        .form-subtitle {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px 0 10px 0;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 5px;
+        }
+        .form-subtitle:first-child { margin-top: 0; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        
+        label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-main);
+        }
+
+        input, select {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(139, 115, 85, 0.2);
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: var(--nav-active-text);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        .btn-submit:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+
+        /* --- TABELA E FILTROS --- */
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-container input {
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .table-responsive { overflow-x: auto; margin-bottom: 25px; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+        
+        th { background-color: var(--primary); color: var(--nav-active-text); font-weight: 600; }
+        tr:hover { background-color: var(--card-hover-bg); }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #fff;
+            display: inline-block;
+        }
+        .status-pendente { background-color: #d9534f; }
+        .status-andamento { background-color: #f0ad4e; }
+        .status-concluido { background-color: #5cb85c; }
+
+        /* Botões de Ação */
+        .btn-action {
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: #fff;
+            margin-right: 4px;
+            margin-bottom: 4px;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-status { background-color: var(--accent); }
+        .btn-status:hover { filter: brightness(1.1); }
+        
+        .btn-delete { background-color: #d9534f; }
+        .btn-delete:hover { filter: brightness(0.9); }
+        
+        /* Botão WhatsApp */
+        .btn-wpp { background-color: #25D366; }
+        .btn-wpp:hover { background-color: #1ebd5a; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(37,211,102,0.4); }
+
+        .item-details { color: var(--text-muted); font-size: 0.8rem; margin-top: 4px; }
+        
+        /* Célula do Valor (Editável) */
+        .valor-cell {
+            cursor: pointer;
+            color: #198754;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+        [data-theme="dark"] .valor-cell { color: #4ade80; }
+        .valor-cell:hover { opacity: 0.7; text-decoration: underline; }
+        
+        /* --- RODAPÉ --- */
+        .footer {
+            background-color: var(--footer-bg);
+            text-align: center;
+            padding: 16px;
+            color: var(--footer-text);
+            font-size: 0.8rem;
+            font-weight: 500;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .top-info-bar { justify-content: center; }
+            .weather-container { justify-content: center; }
+            .weather-divider { display: none; }
+            .site-header { padding: 20px 15px; }
+            .header-titles h1 { font-size: 2rem; }
+            .navbar { flex-wrap: wrap; }
+            .nav-item { flex: 1 1 auto; text-align: center; justify-content: center; border: 1px solid var(--border-color); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Topo Discreto: Data, Hora e Clima -->
+    <div class="top-info-bar">
+        <div class="top-info-item">
+            <i class="fa-regular fa-clock"></i>
+            <span id="datetime-display">Carregando data e hora...</span>
+        </div>
+        <div class="top-info-item weather-container">
+            <i class="fa-solid fa-cloud-sun"></i>
+            <span id="weather-bn">Balsa Nova: --°C (Amanhã: --°C)</span>
+            <span class="weather-divider">|</span>
+            <span id="weather-cl">Campo Largo: --°C (Amanhã: --°C)</span>
+        </div>
+    </div>
+
+    <!-- Cabeçalho -->
+    <header class="site-header">
+        <div class="header-titles">
+            <h1>Serviço Distrital de<br>São Luiz do Purunã</h1>
+        </div>
+    </header>
+
+    <!-- Barra de Navegação -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-item">
+            <i class="fa-solid fa-house"></i> Início
+        </a>
+        <a href="agenda_sabados_cartorio_sem_local.html" class="nav-item">
+            <i class="fa-solid fa-calendar-days"></i> Agenda
+        </a>
+        <a href="#" class="nav-item active">
+            <i class="fa-solid fa-file-contract"></i> Controle de Certidões
+        </a>
+        <a href="https://www.cartoriopuruna.com.br/" target="_blank" class="nav-item">
+            Acessar Site Oficial <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i>
+        </a>
+        <a href="https://wa.me/5541987185555" target="_blank" class="nav-item wpp">
+            <i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 1.1rem;"></i> WhatsApp
+        </a>
+        <a href="#" class="nav-item theme-toggle-btn" id="theme-toggle" title="Alternar Tema Claro/Escuro">
+            <i class="fa-solid fa-moon"></i>
+        </a>
+    </nav>
+
+    <!-- Área de Conteúdo -->
+    <main class="container">
+        
+        <h2 class="section-title"><i class="fa-solid fa-plus-circle"></i> Novo Pedido de Certidão</h2>
+        
+        <div class="form-container">
+            <form id="form-certidao">
+                
+                <div class="form-subtitle">Dados do Solicitante</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="solicitante">Nome do Solicitante *</label>
+                        <input type="text" id="solicitante" required placeholder="Nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Contato / WhatsApp</label>
+                        <input type="text" id="telefone" placeholder="(41) 90000-0000">
+                    </div>
+                </div>
+
+                <div class="form-subtitle">Dados do Documento</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="categoria">Categoria *</label>
+                        <select id="categoria" required onchange="atualizarTipos()">
+                            <option value="">Selecione a Categoria...</option>
+                            <option value="Registro Civil">Registro Civil</option>
+                            <option value="Tabelionato de Notas">Tabelionato de Notas</option>
+                            <option value="Registro de Imóveis">Registro de Imóveis</option>
+                            <option value="Protesto">Protesto de Títulos</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Certidão *</label>
+                        <select id="tipo" required>
+                            <option value="">Selecione a Categoria Primeiro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="livro">Livro nº</label>
+                        <input type="text" id="livro" placeholder="Ex: A-102">
+                    </div>
+                    <div class="form-group">
+                        <label for="folhas">Folha(s) nº</label>
+                        <input type="text" id="folhas" placeholder="Ex: 045 ou 120/122">
+                    </div>
+                    <div class="form-group">
+                        <label for="data_ato">Data do Ato</label>
+                        <input type="date" id="data_ato">
+                    </div>
+                </div>
+
+                <div class="form-subtitle">Prazos, Valor e Status</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="data_pedido">Data do Pedido *</label>
+                        <input type="date" id="data_pedido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="data_previsao">Previsão de Entrega *</label>
+                        <input type="date" id="data_previsao" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_certidao">Valor (R$) - <small>Opcional</small></label>
+                        <input type="text" id="valor_certidao" placeholder="Ex: 45,90">
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status Inicial *</label>
+                        <select id="status" required>
+                            <option value="pendente">Pendente</option>
+                            <option value="andamento">Em Andamento</option>
+                            <option value="concluido">Concluído</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-save"></i> Salvar Pedido de Certidão</button>
+            </form>
+        </div>
+
+        <h2 class="section-title"><i class="fa-solid fa-list-check"></i> Pedidos Registrados</h2>
+        
+        <div class="search-container">
+            <input type="text" id="busca" placeholder="Pesquisar por nome, livro, tipo de certidão..." onkeyup="renderizarTabelas()">
+        </div>
+
+        <!-- Container onde as tabelas separadas serão geradas dinamicamente -->
+        <div id="tabelas-container"></div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="footer">
+        Rua Dom Pedro II, 5872, São Caetano, Balsa Nova - Paraná - (41) 3696-9035 - (41) 98718-5555
+    </footer>
+
+    <!-- Scripts JavaScript -->
+    <script>
+        // --- GERENCIAMENTO DE TEMA (CLARO/ESCURO) ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = themeToggleBtn.querySelector('i');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+
+        themeToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault(); 
+            let theme = document.documentElement.getAttribute('data-theme');
+            theme = theme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        });
+
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun'); 
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon'); 
+            }
+        }
+
+        // --- RELÓGIO TOPO ---
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+            let formatted = now.toLocaleDateString('pt-BR', options).replace('.', '');
+            document.getElementById('datetime-display').textContent = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        async function fetchWeather() {
+            const displayBN = document.getElementById('weather-bn');
+            const displayCL = document.getElementById('weather-cl');
+            
+            displayBN.textContent = `Balsa Nova: 19°C (Amanhã: 21°C)`;
+            displayCL.textContent = `Campo Largo: 18°C (Amanhã: 20°C)`;
+        }
+
+        fetchWeather();
+
+        // --- LÓGICA DE CERTIDÕES ---
+        const tiposPorCategoria = {
+            "Registro Civil": ["Certidão de Nascimento", "Certidão de Casamento", "Certidão de Óbito", "Certidão de Emancipação", "Outros"],
+            "Tabelionato de Notas": ["Certidão de Escritura Pública", "Certidão de Procuração", "Certidão de Testamento", "Ata Notarial", "Outros"],
+            "Registro de Imóveis": ["Matrícula Inteiro Teor", "Certidão de Ônus e Ações", "Certidão Vintenária", "Outros"],
+            "Protesto": ["Certidão Negativa", "Certidão Positiva", "Inteiro Teor (Protesto)"],
+            "Outros": ["Certidão Geral", "Outra"]
+        };
+
+        const categoriasOrdem = [
+            "Registro Civil", 
+            "Tabelionato de Notas", 
+            "Registro de Imóveis", 
+            "Protesto", 
+            "Outros"
+        ];
+
+        let pedidos = JSON.parse(localStorage.getItem('pedidosCertidaoCartorio')) || [];
+
+        function atualizarTipos() {
+            const cat = document.getElementById('categoria').value;
+            const tipo = document.getElementById('tipo');
+            tipo.innerHTML = '<option value="">Selecione o Tipo...</option>';
+            if (cat && tiposPorCategoria[cat]) {
+                tiposPorCategoria[cat].forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t; opt.textContent = t;
+                    tipo.appendChild(opt);
+                });
+            }
+        }
+
+        function formatarData(dataISO) {
+            if(!dataISO) return '-';
+            const partes = dataISO.split('-');
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+
+        // Enviar aviso pelo WhatsApp com texto formatado para cópia fácil do CNPJ
+        function avisarWhatsApp(index) {
+            const pedido = pedidos[index];
+            if (!pedido.telefone) {
+                alert('Atenção: Não há número de telefone/WhatsApp cadastrado para este pedido.');
+                return;
+            }
+            
+            let telefoneLimpo = pedido.telefone.replace(/\D/g, '');
+            if (telefoneLimpo.length === 10 || telefoneLimpo.length === 11) {
+                telefoneLimpo = '55' + telefoneLimpo;
+            }
+
+            // Mensagem formatada, agora SEM o emoji do cifrão
+            let mensagem = `Olá, ${pedido.solicitante}!
+
+Sua ${pedido.tipo} solicitada neste Serviço Distrital de São Luiz do Purunã está Concluída.`;
+            
+            if (pedido.valor) {
+                mensagem += `
+
+O valor da certidão é de R$ ${pedido.valor}
+
+Para pagamento via PIX segue chave abaixo.
+Agradecemos seu pedido, qualquer dúvida estou a disposição.
+
+[ CHAVE PIX - CNPJ - Serviço Distrital de São Luiz do Purunã ]
+
+49.346.899/0001-98`;
+            } else {
+                mensagem += `
+
+Agradecemos seu pedido, qualquer dúvida estou a disposição.`;
+            }
+            
+            const url = `https://wa.me/${telefoneLimpo}?text=${encodeURIComponent(mensagem)}`;
+            window.open(url, '_blank');
+        }
+
+        function editarValor(index) {
+            let novoValor = prompt('Informe o valor da certidão (Ex: 50,00):', pedidos[index].valor || '');
+            if (novoValor !== null) {
+                pedidos[index].valor = novoValor.trim();
+                localStorage.setItem('pedidosCertidaoCartorio', JSON.stringify(pedidos));
+                renderizarTabelas();
+            }
+        }
+
+        function alterarStatus(index) {
+            const ordem = ['pendente', 'andamento', 'concluido'];
+            let proximo = (ordem.indexOf(pedidos[index].status) + 1) % ordem.length;
+            let novoStatus = ordem[proximo];
+            
+            if (novoStatus === 'concluido' && !pedidos[index].valor) {
+                let valorInformado = prompt('Pedido Concluído! Qual o valor desta certidão? (Opcional, ex: 45,90)', '');
+                if (valorInformado !== null) {
+                    pedidos[index].valor = valorInformado.trim();
+                }
+            }
+            
+            pedidos[index].status = novoStatus;
+            localStorage.setItem('pedidosCertidaoCartorio', JSON.stringify(pedidos));
+            renderizarTabelas();
+        }
+
+        function removerPedido(index) {
+            if (confirm('Deseja realmente remover este pedido?')) {
+                pedidos.splice(index, 1);
+                localStorage.setItem('pedidosCertidaoCartorio', JSON.stringify(pedidos));
+                renderizarTabelas();
+            }
+        }
+
+        function renderizarTabelas() {
+            const container = document.getElementById('tabelas-container');
+            const busca = document.getElementById('busca').value.toLowerCase();
+            container.innerHTML = ''; 
+
+            let encontrouAlgumPedido = false;
+
+            categoriasOrdem.forEach(cat => {
+                const pedidosDaCategoria = pedidos.map((p, i) => ({ ...p, originalIndex: i }))
+                    .filter(pedido => {
+                        if (pedido.categoria !== cat) return false;
+                        const texto = `${pedido.solicitante} ${pedido.categoria} ${pedido.tipo} ${pedido.livro}`.toLowerCase();
+                        if (busca && !texto.includes(busca)) return false;
+                        return true;
+                    });
+
+                if (pedidosDaCategoria.length > 0) {
+                    encontrouAlgumPedido = true;
+
+                    const titulo = document.createElement('h3');
+                    titulo.className = 'categoria-titulo';
+                    titulo.innerHTML = `<i class="fa-solid fa-folder-open"></i> ${cat}`;
+                    container.appendChild(titulo);
+
+                    const divResponsive = document.createElement('div');
+                    divResponsive.className = 'table-responsive';
+
+                    const tabela = document.createElement('table');
+                    tabela.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>Solicitante / Contato</th>
+                                <th>Tipo de Certidão</th>
+                                <th>Detalhes (L/F)</th>
+                                <th>Prazos</th>
+                                <th>Valor (R$)</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    `;
+
+                    const tbody = tabela.querySelector('tbody');
+
+                    pedidosDaCategoria.forEach(pedido => {
+                        let detalhes = [];
+                        if(pedido.livro) detalhes.push(`<b>L:</b> ${pedido.livro}`);
+                        if(pedido.folhas) push(`<b>F:</b> ${pedido.folhas}`);
+                        if(pedido.data_ato) detalhes.push(`<b>Data:</b> ${formatarData(pedido.data_ato)}`);
+
+                        let valorHTML = pedido.valor ? `R$ ${pedido.valor}` : `<span style="color: var(--text-muted); font-size: 0.8rem; font-weight: 400;"><i class="fa-solid fa-pen"></i> Add</span>`;
+
+                        let btnWpp = '';
+                        if (pedido.telefone) {
+                            btnWpp = `<button class="btn-action btn-wpp" onclick="avisarWhatsApp(${pedido.originalIndex})" title="Avisar via WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>`;
+                        }
+
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>
+                                <strong>${pedido.solicitante}</strong>
+                                <div class="item-details">${pedido.telefone || 'Sem telefone'}</div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 600;">${pedido.tipo}</div>
+                            </td>
+                            <td>${detalhes.length ? detalhes.join(' | ') : '-'}</td>
+                            <td>
+                                <div>Ped: ${formatarData(pedido.data_pedido)}</div>
+                                <div style="color: var(--accent); font-weight: 600;">Prev: ${formatarData(pedido.data_previsao)}</div>
+                            </td>
+                            <td class="valor-cell" onclick="editarValor(${pedido.originalIndex})" title="Clique para editar o valor">
+                                ${valorHTML}
+                            </td>
+                            <td>
+                                <span class="badge status-${pedido.status}">
+                                    ${pedido.status.charAt(0).toUpperCase() + pedido.status.slice(1)}
+                                </span>
+                            </td>
+                            <td style="white-space: nowrap;">
+                                ${btnWpp}
+                                <button class="btn-action btn-status" onclick="alterarStatus(${pedido.originalIndex})" title="Mudar Status"><i class="fa-solid fa-rotate"></i></button>
+                                <button class="btn-action btn-delete" onclick="removerPedido(${pedido.originalIndex})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+
+                    divResponsive.appendChild(tabela);
+                    container.appendChild(divResponsive);
+                }
+            });
+
+            if (!encontrouAlgumPedido) {
+                container.innerHTML = `<p style="text-align: center; color: var(--text-muted); margin-top: 20px;">Nenhum pedido de certidão encontrado.</p>`;
+            }
+        }
+
+        // Submeter o Formulário
+        document.getElementById('form-certidao').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const novo = {
+                solicitante: document.getElementById('solicitante').value,
+                telefone: document.getElementById('telefone').value,
+                categoria: document.getElementById('categoria').value,
+                tipo: document.getElementById('tipo').value,
+                livro: document.getElementById('livro').value,
+                folhas: document.getElementById('folhas').value,
+                data_ato: document.getElementById('data_ato').value,
+                data_pedido: document.getElementById('data_pedido').value,
+                data_previsao: document.getElementById('data_previsao').value,
+                valor: document.getElementById('valor_certidao').value,
+                status: document.getElementById('status').value
+            };
+            pedidos.push(novo);
+            localStorage.setItem('pedidosCertidaoCartorio', JSON.stringify(pedidos));
+            this.reset();
+            document.getElementById('data_pedido').valueAsDate = new Date();
+            renderizarTabelas();
+        });
+
+        // Setup Inicial
+        document.getElementById('data_pedido').valueAsDate = new Date();
+        renderizarTabelas();
+    </script>
+</body>
+</html>

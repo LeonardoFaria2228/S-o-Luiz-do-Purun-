@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark"><head>
+<html lang="pt-BR" data-theme="dark">
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Agenda de Sábados - Serviço Distrital de São Luiz do Purunã</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:wght@600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -25,8 +26,8 @@
             --text-muted: #666666;
             --border-color: #dddddd;
             
-            --header-bg: #b5b5b5;
-            --header-text: #3b2f2f;
+            --header-bg: #2d2a26; 
+            --header-text: #f5f5f5;
             
             --nav-bg: #f9f9f9;
             --nav-hover: #eeeeee;
@@ -58,41 +59,41 @@
             --status-isento-border: #cbd5e1;
         }
 
-        /* Variáveis de Cores (Tema Escuro) */
+        /* Variáveis de Cores (Tema Escuro Harmonizado) */
         [data-theme="dark"] {
-            --primary: #dcd0c2; 
-            --primary-hover: #ffffff;
+            --primary: #bc9c73; 
+            --primary-hover: #dcd0c2;
             --accent: #bc9c73; 
             
-            --bg-color: #121212;
-            --body-grad-start: #1a1a1a;
-            --body-grad-end: #121212;
+            --bg-color: #0d0d0d;
+            --body-grad-start: #181818;
+            --body-grad-end: #0d0d0d;
             
-            --card-bg: #1e1e1e;
-            --card-hover-bg: #252525;
+            --card-bg: #161616;
+            --card-hover-bg: #222222;
             
-            --text-main: #e0e0e0;
-            --text-muted: #a0a0a0;
-            --border-color: #333333;
+            --text-main: #e5e5e5;
+            --text-muted: #999999;
+            --border-color: #2a2a2a;
             
-            --header-bg: #161514;
-            --header-text: #e0e0e0;
+            --header-bg: #141312; 
+            --header-text: #e8e3dc;
             
-            --nav-bg: #1a1a1a;
-            --nav-hover: #2a2a2a;
+            --nav-bg: #181716;
+            --nav-hover: #262422;
             --nav-active-text: #121212;
             
-            --icon-bg: #2a2a2a;
+            --icon-bg: #262422;
             
-            --footer-bg: #161514;
-            --footer-text: #888888;
+            --footer-bg: #141312;
+            --footer-text: #777777;
 
-            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7);
 
-            --row-alt-bg: #161616;
-            --row-hover-bg: #2a2a2a;
-            --input-bg: #121212;
+            --row-alt-bg: #121212;
+            --row-hover-bg: #222222;
+            --input-bg: #0d0d0d;
 
             /* Status Escuro */
             --status-pago-bg: #14532d;
@@ -108,7 +109,7 @@
             --status-isento-border: #0c4a6e;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { 
             background-color: var(--bg-color); 
@@ -122,14 +123,14 @@
 
         /* --- BARRA TOPO DISCRETA --- */
         .top-info-bar {
-            background-color: #1a1816;
+            background-color: #12100e;
             color: #d1c7bd;
             font-size: 0.75rem;
-            padding: 6px 20px;
+            padding: 8px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -160,11 +161,11 @@
         /* --- CABEÇALHO PRINCIPAL --- */
         .site-header {
             background-color: var(--header-bg); 
-            padding: 30px 20px;
+            padding: 32px 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            border-bottom: 3px solid var(--primary);
+            border-bottom: 2px solid var(--accent);
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
@@ -176,8 +177,8 @@
 
         .header-titles h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 2.8rem;
-            font-weight: 900;
+            font-size: 2.5rem;
+            font-weight: 800;
             color: var(--header-text);
             line-height: 1.15;
             letter-spacing: -0.5px;
@@ -209,7 +210,7 @@
 
         .nav-item:first-child { border-left: 1px solid var(--border-color); }
         .nav-item:hover { background-color: var(--nav-hover); }
-        .nav-item.active { background-color: var(--primary); color: var(--nav-active-text); }
+        .nav-item.active { background-color: var(--accent); color: #ffffff; }
         .nav-item.wpp:hover { color: #25D366; }
 
         .theme-toggle-btn {
@@ -219,7 +220,7 @@
         /* --- CONTEÚDO PRINCIPAL --- */
         .container {
             max-width: 1100px;
-            margin: 35px auto;
+            margin: 30px auto;
             padding: 0 20px;
             flex-grow: 1;
             width: 100%;
@@ -229,7 +230,7 @@
         .controls-bar {
             background-color: var(--card-bg);
             padding: 18px 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             box-shadow: var(--shadow-md);
             margin-bottom: 25px;
             display: flex;
@@ -243,7 +244,7 @@
 
         .controls-bar h2 {
             font-size: 1.25rem;
-            color: var(--primary);
+            color: var(--text-main);
             font-family: 'Playfair Display', serif;
             font-weight: 700;
         }
@@ -255,7 +256,7 @@
         }
 
         button {
-            padding: 9px 16px;
+            padding: 10px 18px;
             border: none;
             border-radius: 6px;
             font-weight: 600;
@@ -267,22 +268,19 @@
             font-size: 0.9rem;
         }
 
-        .btn-primary { background-color: var(--primary); color: white; }
-        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-primary { background-color: var(--accent); color: white; }
+        .btn-primary:hover { opacity: 0.9; }
 
         .btn-success { background-color: #16a34a; color: white; }
         .btn-success:hover { background-color: #15803d; }
-        
-        .btn-warning { background-color: #f59e0b; color: white; border: 1px solid #d97706;}
-        .btn-warning:hover { background-color: #d97706; }
 
-        .btn-danger { background-color: #dc2626; color: white; padding: 4px 8px; font-size: 0.8rem; }
+        .btn-danger { background-color: #dc2626; color: white; padding: 6px 12px; font-size: 0.85rem; }
         .btn-danger:hover { background-color: #b91c1c; }
 
         /* Saturday Card */
         .saturday-card {
             background-color: var(--card-bg);
-            border-radius: 8px;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-md);
             margin-bottom: 30px;
@@ -291,21 +289,22 @@
         }
 
         .card-header {
-            background-color: var(--primary);
-            color: white;
+            background-color: #1c1a17;
+            color: var(--header-text);
             padding: 14px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .card-header input[type="date"] {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 6px 10px;
+            border-radius: 6px;
             border: 1px solid var(--border-color);
             background: var(--input-bg);
             color: var(--text-main);
@@ -337,24 +336,25 @@
             gap: 8px;
         }
 
-        .info-item label { font-weight: bold; color: var(--primary); }
+        .info-item label { font-weight: bold; color: var(--accent); }
 
         .info-item input {
             border: 1px solid var(--border-color);
             background-color: var(--input-bg);
             color: var(--text-main);
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 6px 10px;
+            border-radius: 6px;
             width: 100%;
             font-size: 0.88rem;
         }
 
         /* Table Styling */
+        .table-responsive { width: 100%; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 
         th {
             background-color: var(--card-hover-bg);
-            color: var(--primary);
+            color: var(--accent);
             padding: 12px 10px;
             text-align: left;
             font-size: 0.8rem;
@@ -376,11 +376,10 @@
 
         tr:nth-child(even) { background-color: var(--row-alt-bg); }
 
-        td[contenteditable="true"] { outline: none; }
+        td[contenteditable="true"] { outline: none; border-radius: 4px; }
         td[contenteditable="true"]:focus {
             background-color: var(--row-hover-bg);
             box-shadow: inset 0 0 0 2px var(--accent);
-            border-radius: 2px;
         }
 
         .time-col {
@@ -391,12 +390,13 @@
         }
 
         select.status-select {
-            padding: 5px;
-            border-radius: 4px;
+            padding: 6px 8px;
+            border-radius: 6px;
             font-size: 0.85rem;
             font-weight: 600;
             width: 100%;
             cursor: pointer;
+            outline: none;
         }
 
         select.status-pago { background-color: var(--status-pago-bg); color: var(--status-pago-text); border: 1px solid var(--status-pago-border); }
@@ -432,13 +432,121 @@
         .footer {
             background-color: var(--footer-bg);
             text-align: center;
-            padding: 16px;
+            padding: 18px;
             color: var(--footer-text);
             font-size: 0.8rem;
             font-weight: 500;
             border-top: 1px solid var(--border-color);
             margin-top: 40px;
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Visibilidade das Views em Mobile */
+        .mobile-cards-view { display: none; }
+        .desktop-table-view { display: block; }
+
+        /* =========================================================
+           ADAPTAÇÕES DE EXPERIÊNCIA MOBILE (Android / iOS)
+           ========================================================= */
+        @media (max-width: 768px) {
+            .top-info-bar { justify-content: center; font-size: 0.7rem; padding: 6px 12px; }
+            .weather-container { justify-content: center; }
+            .weather-divider { display: none; }
+            
+            .site-header { padding: 20px 15px; }
+            .header-titles h1 { font-size: 1.6rem; }
+
+            .navbar {
+                overflow-x: auto;
+                justify-content: flex-start;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .navbar::-webkit-scrollbar { display: none; }
+            .nav-item { flex: 0 0 auto; padding: 12px 16px; font-size: 0.82rem; white-space: nowrap; }
+
+            .container { padding: 0 12px; margin: 18px auto; }
+            
+            .controls-bar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 14px;
+                gap: 10px;
+            }
+            .controls-bar h2 { font-size: 1.05rem; text-align: center; }
+            .btn-group { width: 100%; justify-content: space-between; }
+            .btn-group button { flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; }
+
+            .card-header { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px 14px; }
+            .card-header-title { justify-content: space-between; font-size: 1rem; width: 100%; }
+            .card-header input[type="date"] { width: 100%; }
+
+            /* Oculta Tabela Rígida em Telas Pequenas */
+            .desktop-table-view { display: none; }
+            
+            /* Exibe os Cards Responsivos em Telas Pequenas */
+            .mobile-cards-view { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+            
+            .mobile-slot-card {
+                background: var(--card-hover-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                padding: 12px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .mobile-slot-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 6px;
+            }
+
+            .mobile-slot-time {
+                font-weight: 700;
+                color: var(--accent);
+                font-size: 1rem;
+            }
+
+            .mobile-input-field {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .mobile-input-field label {
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                font-weight: 600;
+            }
+
+            .mobile-input-field [contenteditable="true"] {
+                border: 1px solid var(--border-color);
+                background-color: var(--input-bg);
+                color: var(--text-main);
+                padding: 8px 10px;
+                border-radius: 6px;
+                font-size: 0.9rem;
+                min-height: 38px;
+            }
+
+            .mobile-row-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .save-indicator {
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+                justify-content: center;
+                font-size: 0.85rem;
+            }
         }
 
         /* Print Optimization */
@@ -449,6 +557,8 @@
             .saturday-card { background: white !important; box-shadow: none; border: 1px solid #94a3b8 !important; margin-bottom: 20mm; page-break-inside: avoid; }
             .card-header { background-color: #2d2a26 !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .card-header input[type="date"] { border: none; background: transparent !important; color: white !important; font-weight: bold; }
+            .desktop-table-view { display: block !important; }
+            .mobile-cards-view { display: none !important; }
             th { background-color: #f1f5f9 !important; color: #2d2a26 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .info-bar { background-color: #f8fafc !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .info-item label { color: #2d2a26 !important; }
@@ -459,16 +569,6 @@
             select { appearance: none; -webkit-appearance: none; border: none !important; background: transparent !important; color: black !important; }
             tr { page-break-inside: avoid; }
         }
-
-        @media (max-width: 768px) {
-            .top-info-bar { justify-content: center; }
-            .weather-container { justify-content: center; }
-            .weather-divider { display: none; }
-            .site-header { padding: 20px 15px; }
-            .header-titles h1 { font-size: 2rem; }
-            .navbar { flex-wrap: wrap; }
-            .nav-item { flex: 1 1 auto; text-align: center; justify-content: center; border: 1px solid var(--border-color); }
-        }
     </style>
 </head>
 <body>
@@ -477,13 +577,13 @@
     <div class="top-info-bar">
         <div class="top-info-item">
             <i class="fa-regular fa-clock"></i>
-            <span id="datetime-display">Sáb, 29 de ago. de 2026, 01:48:39</span>
+            <span id="datetime-display">Carregando data...</span>
         </div>
         <div class="top-info-item weather-container">
             <i class="fa-solid fa-cloud-sun"></i>
-            <span id="weather-bn">Balsa Nova: --°C (Amanhã: --°C)</span>
+            <span id="weather-bn">Balsa Nova: --°C</span>
             <span class="weather-divider">|</span>
-            <span id="weather-cl">Campo Largo: --°C (Amanhã: --°C)</span>
+            <span id="weather-cl">Campo Largo: --°C</span>
         </div>
     </div>
 
@@ -515,260 +615,60 @@
         <div class="controls-bar">
             <h2><i class="fa-solid fa-calendar-days" style="color: var(--accent);"></i> Gerenciador de Agendamentos dos Sábados</h2>
             <div class="btn-group">
-                <button class="btn-primary" onclick="addSaturday()">➕ Novo Sábado</button>
-                <button class="btn-warning" onclick="saveToFile()"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button>
+                <button class="btn-primary" onclick="window.addSaturday()">➕ Novo Sábado</button>
                 <button class="btn-success" onclick="window.print()">🖨️ Imprimir Agenda</button>
             </div>
         </div>
 
-        <!-- Container for Saturday Cards -->
-        <div id="saturdays-container"><div class="saturday-card">
-                <div class="card-header">
-                    <div class="card-header-title">
-                        📅 Agendamento de Sábado: 
-                        <input type="date" class="date-input" value="" onchange="autoSaveLocal()">
-                    </div>
-                    <button class="btn-danger no-print" onclick="removeSaturday(this)">🗑️ Excluir Dia</button>
-                </div>
-                <div class="info-bar">
-                    <div class="info-item">
-                        <label>Horário:</label>
-                        <span>09:00 às 11:00</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Responsável:</label>
-                        <input type="text" class="escrevente-input" placeholder="Nome do escrevente" value="" onblur="autoSaveLocal()">
-                    </div>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="center">Horário</th>
-                            <th>Nome do Cliente / Solicitante</th>
-                            <th class="center">Telefone / Whats</th>
-                            <th>Serviço Solicitado</th>
-                            <th class="center">Status</th>
-                            <th>Observações / Detalhes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    <tr class="agenda-row">
-                        <td class="center time-col time-cell">09:00</td>
-                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()">Joao</td>
-                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
-                        <td class="center">
-                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
-                                <option value="Pendente" selected="">Pendente</option>
-                                <option value="Pago">Pago</option>
-                                <option value="Isento">Isento</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
-                    </tr>
-                
-                    <tr class="agenda-row">
-                        <td class="center time-col time-cell">09:15</td>
-                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
-                        <td class="center">
-                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
-                                <option value="Pendente" selected="">Pendente</option>
-                                <option value="Pago">Pago</option>
-                                <option value="Isento">Isento</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
-                    </tr>
-                
-                    <tr class="agenda-row">
-                        <td class="center time-col time-cell">09:30</td>
-                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
-                        <td class="center">
-                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
-                                <option value="Pendente" selected="">Pendente</option>
-                                <option value="Pago">Pago</option>
-                                <option value="Isento">Isento</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
-                    </tr>
-                
-                    <tr class="agenda-row">
-                        <td class="center time-col time-cell">09:45</td>
-                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
-                        <td class="center">
-                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
-                                <option value="Pendente" selected="">Pendente</option>
-                                <option value="Pago">Pago</option>
-                                <option value="Isento">Isento</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
-                    </tr>
-                
-                    <tr class="agenda-row">
-                        <td class="center time-col time-cell">10:00</td>
-                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
-                        <td class="center">
-                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
-                                <option value="Pendente" selected="">Pendente</option>
-                                <option value="Pago">Pago</option>
-                                <option value="Isento">Isento</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
-                    </tr>
-                
-                    <tr class="agenda-row">
-                        <td class="center time-col time-cell">10:15</td>
-                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
-                        <td class="center">
-                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
-                                <option value="Pendente" selected="">Pendente</option>
-                                <option value="Pago">Pago</option>
-                                <option value="Isento">Isento</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
-                    </tr>
-                
-                    <tr class="agenda-row">
-                        <td class="center time-col time-cell">10:30</td>
-                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
-                        <td class="center">
-                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
-                                <option value="Pendente" selected="">Pendente</option>
-                                <option value="Pago">Pago</option>
-                                <option value="Isento">Isento</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
-                    </tr>
-                
-                    <tr class="agenda-row">
-                        <td class="center time-col time-cell">10:45</td>
-                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
-                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
-                        <td class="center">
-                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
-                                <option value="Pendente" selected="">Pendente</option>
-                                <option value="Pago">Pago</option>
-                                <option value="Isento">Isento</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
-                    </tr>
-                
-                    </tbody>
-                </table>
-            </div></div>
+        <!-- Container para os Cards de Sábado (Carregado dinamicamente via Firebase) -->
+        <div id="saturdays-container"></div>
     </div>
     
     <!-- Notification Toast -->
     <div id="save-toast" class="save-indicator">
-        <i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Alterações salvas com sucesso!</span>
+        <i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Sincronizado na nuvem! ☁️</span>
     </div>
 
     <!-- Rodapé -->
     <footer class="footer">
         Rua Dom Pedro II, 5872, São Caetano, Balsa Nova - Paraná - (41) 3696-9035 - (41) 98718-5555
     </footer>
-    
-    <!-- DADOS DA AGENDA (JSON EMBUTIDO PARA SALVAMENTO PERMANENTE) -->
-    <script id="app-data" type="application/json">[
-  {
-    "date": "",
-    "escrevente": "",
-    "rows": [
-      {
-        "time": "09:00",
-        "client": "Joao",
-        "phone": "",
-        "service": "",
-        "status": "Pendente",
-        "obs": ""
-      },
-      {
-        "time": "09:15",
-        "client": "",
-        "phone": "",
-        "service": "",
-        "status": "Pendente",
-        "obs": ""
-      },
-      {
-        "time": "09:30",
-        "client": "",
-        "phone": "",
-        "service": "",
-        "status": "Pendente",
-        "obs": ""
-      },
-      {
-        "time": "09:45",
-        "client": "",
-        "phone": "",
-        "service": "",
-        "status": "Pendente",
-        "obs": ""
-      },
-      {
-        "time": "10:00",
-        "client": "",
-        "phone": "",
-        "service": "",
-        "status": "Pendente",
-        "obs": ""
-      },
-      {
-        "time": "10:15",
-        "client": "",
-        "phone": "",
-        "service": "",
-        "status": "Pendente",
-        "obs": ""
-      },
-      {
-        "time": "10:30",
-        "client": "",
-        "phone": "",
-        "service": "",
-        "status": "Pendente",
-        "obs": ""
-      },
-      {
-        "time": "10:45",
-        "client": "",
-        "phone": "",
-        "service": "",
-        "status": "Pendente",
-        "obs": ""
-      }
-    ]
-  }
-]</script>
 
-    <!-- Scripts JavaScript -->
-    <script>
+    <!-- LÓGICA DO SISTEMA E SINCRONIZAÇÃO EM TEMPO REAL VIA FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Credenciais do seu Projeto no Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWk3yKgaQCsieRiQcbWMIcKFPAw2jFpvM",
+            authDomain: "agenda-cartorio-c42b5.firebaseapp.com",
+            databaseURL: "https://agenda-cartorio-c42b5-default-rtdb.firebaseio.com",
+            projectId: "agenda-cartorio-c42b5",
+            storageBucket: "agenda-cartorio-c42b5.firebasestorage.app",
+            messagingSenderId: "125918572476",
+            appId: "1:125918572476:web:fc1706bd62601f3d8c45b9",
+            measurementId: "G-01YC2HZJF5"
+        };
+
+        // Inicializa o Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const agendaRef = ref(db, 'agendamentos/sabados');
+
+        const timeSlots = ["09:00", "09:15", "09:30", "09:45", "10:00", "10:15", "10:30", "10:45"];
+        let isUpdatingFromCloud = false;
+
+        // Expõe funções para os eventos HTML inline (onclick, onblur, etc.)
+        window.updateStatusClass = updateStatusClass;
+        window.addSaturday = addSaturday;
+        window.removeSaturday = removeSaturday;
+        window.autoSaveToCloud = autoSaveToCloud;
+
         // --- 1. Controle de Tema Claro/Escuro ---
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIcon = themeToggleBtn.querySelector('i');
-        
-        const currentTheme = localStorage.getItem('theme') || 'light';
+        const currentTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', currentTheme);
         updateThemeIcon(currentTheme);
 
@@ -801,16 +701,42 @@
         setInterval(updateDateTime, 1000);
         updateDateTime();
 
-        // --- 3. Lógica da Agenda e Salvamento ---
-        const timeSlots = ["09:00", "09:15", "09:30", "09:45", "10:00", "10:15", "10:30", "10:45"];
-        const LOCAL_STORAGE_KEY = 'cartorio_agenda_sabados_v2';
+        // Synchronize values between desktop and mobile views
+        function syncInputs(source, targetClass, parentSelector) {
+            const parent = source.closest(parentSelector);
+            const target = parent.querySelector(targetClass);
+            if (target) {
+                if (source.tagName === 'SELECT' || source.tagName === 'INPUT') {
+                    target.value = source.value;
+                } else {
+                    target.textContent = source.textContent;
+                }
+            }
+        }
 
+        // --- 3. Lógica da Agenda e Interface ---
         function updateStatusClass(selectElement) {
+            const val = selectElement.value;
             selectElement.className = 'status-select status-cell';
-            if (selectElement.value === 'Pago') selectElement.classList.add('status-pago');
-            else if (selectElement.value === 'Pendente') selectElement.classList.add('status-pendente');
-            else if (selectElement.value === 'Isento') selectElement.classList.add('status-isento');
-            autoSaveLocal(); // backup silencioso
+            if (val === 'Pago') selectElement.classList.add('status-pago');
+            else if (val === 'Pendente') selectElement.classList.add('status-pendente');
+            else if (val === 'Isento') selectElement.classList.add('status-isento');
+
+            // Synchronize with pair element (Mobile <-> Desktop)
+            const parent = selectElement.closest('.agenda-row, .mobile-slot-card');
+            const targetSelect = parent.classList.contains('agenda-row') 
+                ? selectElement.closest('.saturday-card').querySelectorAll('.mobile-slot-card')[Array.from(parent.parentNode.children).indexOf(parent)].querySelector('.status-cell')
+                : selectElement.closest('.saturday-card').querySelectorAll('.agenda-row')[Array.from(parent.parentNode.children).indexOf(parent)].querySelector('.status-cell');
+            
+            if (targetSelect && targetSelect.value !== val) {
+                targetSelect.value = val;
+                targetSelect.className = 'status-select status-cell';
+                if (val === 'Pago') targetSelect.classList.add('status-pago');
+                else if (val === 'Pendente') targetSelect.classList.add('status-pendente');
+                else if (val === 'Isento') targetSelect.classList.add('status-isento');
+            }
+
+            autoSaveToCloud();
         }
 
         function createSaturdayCard(data = null) {
@@ -820,7 +746,9 @@
             const dateValue = data ? data.date : '';
             const escreventeValue = data ? data.escrevente : '';
 
-            let rowsHtml = '';
+            let tableRowsHtml = '';
+            let mobileCardsHtml = '';
+
             const rowsData = data && data.rows && data.rows.length > 0 ? data.rows : timeSlots.map(t => ({ time: t, client: '', phone: '', service: '', status: 'Pendente', obs: '' }));
 
             rowsData.forEach(r => {
@@ -828,31 +756,66 @@
                 const statusPendente = r.status === 'Pendente' ? 'selected' : '';
                 const statusIsento = r.status === 'Isento' ? 'selected' : '';
 
-                rowsHtml += `
+                // Visão Desktop (Tabela)
+                tableRowsHtml += `
                     <tr class="agenda-row">
                         <td class="center time-col time-cell">${r.time}</td>
-                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()">${r.client}</td>
-                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()">${r.phone}</td>
-                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()">${r.service}</td>
+                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="window.autoSaveToCloud()">${r.client}</td>
+                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="window.autoSaveToCloud()">${r.phone}</td>
+                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="window.autoSaveToCloud()">${r.service}</td>
                         <td class="center">
-                            <select class="status-select status-cell" onchange="updateStatusClass(this)">
+                            <select class="status-select status-cell" onchange="window.updateStatusClass(this)">
                                 <option value="Pendente" ${statusPendente}>Pendente</option>
                                 <option value="Pago" ${statusPago}>Pago</option>
                                 <option value="Isento" ${statusIsento}>Isento</option>
                             </select>
                         </td>
-                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()">${r.obs}</td>
+                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="window.autoSaveToCloud()">${r.obs}</td>
                     </tr>
+                `;
+
+                // Visão Mobile (Cards otimizados para toque)
+                mobileCardsHtml += `
+                    <div class="mobile-slot-card">
+                        <div class="mobile-slot-header">
+                            <span class="mobile-slot-time"><i class="fa-regular fa-clock"></i> ${r.time}</span>
+                            <div style="width: 120px;">
+                                <select class="status-select status-cell" onchange="window.updateStatusClass(this)">
+                                    <option value="Pendente" ${statusPendente}>Pendente</option>
+                                    <option value="Pago" ${statusPago}>Pago</option>
+                                    <option value="Isento" ${statusIsento}>Isento</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mobile-input-field">
+                            <label>Cliente / Solicitante</label>
+                            <div contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="window.autoSaveToCloud()">${r.client}</div>
+                        </div>
+                        <div class="mobile-row-grid">
+                            <div class="mobile-input-field">
+                                <label>Telefone / Whats</label>
+                                <div contenteditable="true" placeholder="(00) 00000-0000" class="phone-cell" onblur="window.autoSaveToCloud()">${r.phone}</div>
+                            </div>
+                            <div class="mobile-input-field">
+                                <label>Serviço Solicitado</label>
+                                <div contenteditable="true" placeholder="Ex: Procuração" class="service-cell" onblur="window.autoSaveToCloud()">${r.service}</div>
+                            </div>
+                        </div>
+                        <div class="mobile-input-field">
+                            <label>Observações / Detalhes</label>
+                            <div contenteditable="true" placeholder="Anotações adicionais..." class="obs-cell" onblur="window.autoSaveToCloud()">${r.obs}</div>
+                        </div>
+                    </div>
                 `;
             });
 
             card.innerHTML = `
                 <div class="card-header">
                     <div class="card-header-title">
-                        📅 Agendamento de Sábado: 
-                        <input type="date" class="date-input" value="${dateValue}" onchange="autoSaveLocal()">
+                        <span>📅 Agendamento de Sábado:</span>
+                        <input type="date" class="date-input" value="${dateValue}" onchange="window.autoSaveToCloud()">
                     </div>
-                    <button class="btn-danger no-print" onclick="removeSaturday(this)">🗑️ Excluir Dia</button>
+                    <button class="btn-danger no-print" onclick="window.removeSaturday(this)"><i class="fa-solid fa-trash"></i> Excluir Dia</button>
                 </div>
                 <div class="info-bar">
                     <div class="info-item">
@@ -861,24 +824,33 @@
                     </div>
                     <div class="info-item">
                         <label>Responsável:</label>
-                        <input type="text" class="escrevente-input" placeholder="Nome do escrevente" value="${escreventeValue}" onblur="autoSaveLocal()">
+                        <input type="text" class="escrevente-input" placeholder="Nome do escrevente" value="${escreventeValue}" onblur="window.autoSaveToCloud()">
                     </div>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="center">Horário</th>
-                            <th>Nome do Cliente / Solicitante</th>
-                            <th class="center">Telefone / Whats</th>
-                            <th>Serviço Solicitado</th>
-                            <th class="center">Status</th>
-                            <th>Observações / Detalhes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${rowsHtml}
-                    </tbody>
-                </table>
+                
+                <!-- Desktop View -->
+                <div class="table-responsive desktop-table-view">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="center">Horário</th>
+                                <th>Nome do Cliente / Solicitante</th>
+                                <th class="center">Telefone / Whats</th>
+                                <th>Serviço Solicitado</th>
+                                <th class="center">Status</th>
+                                <th>Observações / Detalhes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRowsHtml}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile View -->
+                <div class="mobile-cards-view">
+                    ${mobileCardsHtml}
+                </div>
             `;
 
             setTimeout(() => {
@@ -891,17 +863,16 @@
         function addSaturday() {
             const container = document.getElementById('saturdays-container');
             container.appendChild(createSaturdayCard());
-            autoSaveLocal(); 
+            autoSaveToCloud(); 
         }
 
         function removeSaturday(button) {
             if (confirm('Tem certeza que deseja excluir toda a agenda deste sábado? Esta ação não pode ser desfeita.')) {
                 button.closest('.saturday-card').remove();
-                autoSaveLocal(); 
+                autoSaveToCloud(); 
             }
         }
 
-        // Captura os dados do HTML visual
         function gatherDataFromDOM() {
             const container = document.getElementById('saturdays-container');
             const cards = container.querySelectorAll('.saturday-card');
@@ -911,16 +882,23 @@
                 const dateVal = card.querySelector('.date-input').value;
                 const escreventeVal = card.querySelector('.escrevente-input').value;
                 const rows = [];
-                const rowElements = card.querySelectorAll('.agenda-row');
                 
-                rowElements.forEach(row => {
+                // Determina qual visualização está ativa para coletar os dados
+                const isMobile = window.innerWidth <= 768;
+                const elements = isMobile ? card.querySelectorAll('.mobile-slot-card') : card.querySelectorAll('.agenda-row');
+                
+                elements.forEach((el, index) => {
+                    const timeTxt = isMobile 
+                        ? el.querySelector('.mobile-slot-time').textContent.trim() 
+                        : el.querySelector('.time-cell').textContent.trim();
+
                     rows.push({
-                        time: row.querySelector('.time-cell').textContent.trim(),
-                        client: row.querySelector('.client-cell').textContent.trim(),
-                        phone: row.querySelector('.phone-cell').textContent.trim(),
-                        service: row.querySelector('.service-cell').textContent.trim(),
-                        status: row.querySelector('.status-cell').value,
-                        obs: row.querySelector('.obs-cell').textContent.trim()
+                        time: timeTxt,
+                        client: el.querySelector('.client-cell').textContent.trim(),
+                        phone: el.querySelector('.phone-cell').textContent.trim(),
+                        service: el.querySelector('.service-cell').textContent.trim(),
+                        status: el.querySelector('.status-cell').value,
+                        obs: el.querySelector('.obs-cell').textContent.trim()
                     });
                 });
                 savedData.push({ date: dateVal, escrevente: escreventeVal, rows: rows });
@@ -928,104 +906,49 @@
             return savedData;
         }
 
-        // Backup Silencioso de Memória (ajuda se der erro de fechar a aba sem salvar fisicamente)
-        function autoSaveLocal() {
+        // --- 4. Salvamento Automático na Nuvem ---
+        function autoSaveToCloud() {
+            if (isUpdatingFromCloud) return; 
+            
             const data = gatherDataFromDOM();
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
-            // Atualiza também o bloco JSON invisível no DOM
-            document.getElementById('app-data').textContent = JSON.stringify(data, null, 2);
+            set(agendaRef, data).then(() => {
+                showSaveToast("Sincronizado na nuvem! ☁️");
+            }).catch(err => {
+                console.error("Erro ao salvar:", err);
+                showSaveToast("Erro de conexão com o banco!");
+            });
         }
 
-        // SALVAMENTO FÍSICO DEFINITIVO (Substitui o arquivo)
-        async function saveToFile() {
-            const savedData = gatherDataFromDOM();
+        // --- 5. Ouvinte em Tempo Real (Escuta a Nuvem) ---
+        onValue(agendaRef, (snapshot) => {
+            isUpdatingFromCloud = true; 
             
-            // Força a atualização do JSON invisível
-            document.getElementById('app-data').textContent = JSON.stringify(savedData, null, 2);
-            
-            // Pega todo o código HTML do arquivo
-            const htmlString = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-
-            try {
-                if (window.showSaveFilePicker) {
-                    // Chrome / Edge: permite regravar por cima do mesmo arquivo
-                    const fileHandle = await window.showSaveFilePicker({
-                        suggestedName: 'Agenda_Cartorio_Atualizada.html',
-                        types: [{ description: 'Arquivo HTML', accept: {'text/html': ['.html']} }]
-                    });
-                    const writable = await fileHandle.createWritable();
-                    await writable.write(htmlString);
-                    await writable.close();
-                    showSaveToast("Arquivo atualizado com sucesso no computador!");
-                } else {
-                    // Outros navegadores: faz o download automático de uma nova cópia
-                    const blob = new Blob([htmlString], {type: "text/html;charset=utf-8"});
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'Agenda_Cartorio_Atualizada.html';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    showSaveToast("Download do arquivo atualizado concluído!");
-                }
-            } catch (e) {
-                console.error("Save cancelled:", e);
-                autoSaveLocal(); // garante que ficou pelo menos na memória
-                showSaveToast("Salvo na memória temporária do navegador!");
-            }
-        }
-
-        function loadData() {
-            let dataToLoad = null;
-            
-            // 1. Sempre prioriza ler do arquivo embutido (pois é o Salvo Físico)
-            const embeddedStr = document.getElementById('app-data').textContent;
-            try {
-                if (embeddedStr.trim() !== '') {
-                    dataToLoad = JSON.parse(embeddedStr);
-                }
-            } catch(e) {}
-            
-            // 2. Se o arquivo estiver vazio, tenta ler da memória temporária (localStorage)
-            if (!dataToLoad || dataToLoad.length === 0) {
-                const localStr = localStorage.getItem(LOCAL_STORAGE_KEY);
-                if (localStr) {
-                    try { dataToLoad = JSON.parse(localStr); } catch(e) {}
-                }
-            }
-
+            const dataToLoad = snapshot.val();
             const container = document.getElementById('saturdays-container');
-            container.innerHTML = ''; 
             
-            if (dataToLoad && dataToLoad.length > 0) {
-                dataToLoad.forEach(d => { container.appendChild(createSaturdayCard(d)); });
-            } else {
-                addSaturday(); // Se tudo estiver vazio, cria 1 sabado novo
-            }
-        }
+            // Verifica se o usuário está digitando em alguma célula para não resetar o foco
+            const activeElement = document.activeElement;
+            const isEditing = activeElement && (activeElement.hasAttribute('contenteditable') || activeElement.tagName === 'INPUT');
 
-        // Animação da notificação
+            if (!isEditing) {
+                container.innerHTML = ''; 
+                if (dataToLoad && dataToLoad.length > 0) {
+                    dataToLoad.forEach(d => { container.appendChild(createSaturdayCard(d)); });
+                } else {
+                    container.appendChild(createSaturdayCard()); 
+                }
+            }
+
+            setTimeout(() => { isUpdatingFromCloud = false; }, 300);
+        });
+
+        // Notificação Toaster
         function showSaveToast(message) {
             const toast = document.getElementById('save-toast');
             document.getElementById('toast-msg').textContent = message;
             toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 4000);
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
-
-        // Atalho Ctrl+S para Salvar o Arquivo Físico
-        document.addEventListener('keydown', function(e) {
-            if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.key === 's') {
-                e.preventDefault();
-                saveToFile();
-            }
-        });
-
-        // Inicialização
-        window.onload = () => {
-            loadData();
-        };
     </script>
-
-
-
-</body></html>
+</body>
+</html>
