@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Custas - Cartório São Luiz do Purunã</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        /* Variáveis de Cores (Tema Claro Padrão - Alinhado ao Index) */
+        :root {
+            --primary: #2d2a26; 
+            --primary-hover: #4a453f;
+            --accent: #8b7355; 
+            --secondary: #059669;
+            
+            --bg-color: #f4f4f4;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #dddddd;
+            --tabs-bg: #e5e5e5;
+            
+            --header-bg: #b5b5b5;
+            --header-text: #3b2f2f;
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Variáveis de Cores (Tema Escuro - Alinhado ao Index) */
+        [data-theme="dark"] {
+            --primary: #dcd0c2; 
+            --primary-hover: #ffffff;
+            --accent: #bc9c73; 
+            --secondary: #10b981;
+            
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --input-bg: #2a2a2a;
+            
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border-color: #333333;
+            --tabs-bg: #2a2a2a;
+            
+            --header-bg: #161514;
+            --header-text: #e0e0e0;
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; width: 100vw; overflow: hidden; transition: background 0.3s ease, color 0.3s ease; }
+
+        /* Barra Lateral */
+        .sidebar { width: 440px; min-width: 320px; background-color: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; z-index: 1000; overflow-y: auto; transition: background-color 0.3s; }
+        
+        .header { padding: 22px 20px; background: var(--header-bg); color: var(--header-text); position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-md); border-bottom: 2px solid var(--primary); }
+        .header-content { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .header-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--header-text);}
+        .header-logo-svg { width: 44px; height: 44px; flex-shrink: 0; }
+        .header-text h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 800; line-height: 1.2; margin-bottom: 2px; color: var(--header-text); }
+        .header-divider { width: 100%; height: 2px; background: var(--accent); margin: 6px 0; border-radius: 2px; }
+        .header-text p { font-size: 0.75rem; opacity: 0.85; font-weight: 500; }
+
+        .btn-theme { background: rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color); color: var(--text-main); width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
+        .btn-theme:hover { background: var(--accent); color: white; }
+
+        .form-section { padding: 24px 20px; flex-grow: 1; }
+        
+        .tabs { display: flex; background: var(--tabs-bg); padding: 3px; border-radius: 8px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 10px 4px; border: none; background: transparent; border-radius: 6px; cursor: pointer; font-weight: 600; color: var(--text-muted); font-size: 0.8rem; transition: 0.2s; }
+        .tab-btn.active { background-color: var(--card-bg); color: var(--text-main); box-shadow: var(--shadow-sm); }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        .form-group select, .form-group input { width: 100%; padding: 10px 12px; background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 6px; outline: none; font-size: 0.9rem; color: var(--text-main); transition: 0.2s; }
+        .form-group select:focus, .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.15); }
+        select option { background-color: var(--card-bg); color: var(--text-main); }
+        
+        .row { display: flex; gap: 12px; }
+        .row .form-group { flex: 1; }
+        .row .form-group.qtd { flex: 0 0 80px; }
+
+        .btn-add { width: 100%; padding: 12px; background-color: var(--primary); color: var(--bg-color); border: none; border-radius: 6px; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-add:hover { opacity: 0.9; }
+
+        /* Área Principal (Orçamento) */
+        .main-content { flex-grow: 1; padding: 32px 40px; overflow-y: auto; display: flex; flex-direction: column; background-color: var(--bg-color); }
+        
+        .budget-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; box-shadow: var(--shadow-md); flex-grow: 1; display: flex; flex-direction: column; }
+        .budget-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px; }
+        .budget-title { font-size: 1.3rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; font-family: 'Playfair Display', serif; }
+        
+        table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+        th { text-align: left; padding: 12px 8px; font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
+        td { padding: 12px 8px; font-size: 0.9rem; color: var(--text-main); border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .td-valor { font-family: monospace; font-weight: 600; white-space: nowrap; }
+        .td-acoes { width: 40px; text-align: right; }
+        
+        .btn-del { background: transparent; border: none; color: #ef4444; cursor: pointer; padding: 4px; border-radius: 4px; transition: 0.2s; }
+        .btn-del:hover { background: rgba(239, 68, 68, 0.1); }
+
+        .budget-footer { margin-top: auto; border-top: 2px solid var(--border-color); padding-top: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .budget-total h3 { font-size: 1rem; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+        .budget-total .valor-final { font-size: 2rem; font-weight: 700; color: var(--primary); font-family: 'Playfair Display', serif; }
+
+        .action-buttons { display: flex; gap: 12px; }
+        .btn-action { padding: 10px 16px; border-radius: 6px; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; border: none; }
+        .btn-wpp { background-color: #25D366; color: white; } .btn-wpp:hover { background-color: #1DA851; }
+        .btn-print { background-color: var(--tabs-bg); color: var(--text-main); } .btn-print:hover { background-color: var(--border-color); }
+        .btn-clear { background-color: transparent; border: 1px solid #ef4444; color: #ef4444; } .btn-clear:hover { background-color: rgba(239, 68, 68, 0.1); }
+
+        .toast { position: fixed; bottom: 20px; right: 20px; background-color: var(--secondary); color: white; padding: 12px 20px; border-radius: 6px; display: none; z-index: 2000; font-size: 0.85rem; font-weight: 600; box-shadow: var(--shadow-md); }
+
+        .print-header { display: none; }
+
+        @media print {
+            body { background: white !important; color: black !important; padding: 0; }
+            .sidebar, .action-buttons, .td-acoes, th:nth-child(5), td:nth-child(5), .budget-header { display: none !important; }
+            .main-content { padding: 0 !important; overflow: visible !important; }
+            .budget-card { box-shadow: none !important; border: none !important; padding: 0 !important; }
+            
+            table { margin-top: 20px; }
+            th { border-bottom: 2px solid #000; color: #000; font-weight: bold; }
+            td { border-bottom: 1px solid #ccc; color: #000; }
+            .budget-footer { border-top: 2px solid #000; }
+            .budget-total .valor-final { color: #000 !important; }
+
+            .print-header {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-bottom: 2px solid #000;
+                padding-bottom: 20px;
+                margin-bottom: 30px;
+                position: relative;
+                text-align: center;
+            }
+            
+            .print-header img {
+                position: absolute;
+                left: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 85px;
+            }
+
+            .print-header-text {
+                font-family: 'Times New Roman', Times, serif;
+                line-height: 1.2;
+                color: #000;
+            }
+
+            .print-header-text h1 { font-size: 15pt; margin: 0; letter-spacing: 1px; font-weight: normal; }
+            .print-header-text h2 { font-size: 13pt; margin: 0 0 6px 0; letter-spacing: 1px; font-weight: bold; }
+            .print-header-text p { font-size: 11pt; margin: 2px 0; }
+            .print-header-text .oficial { font-size: 13pt; font-weight: bold; margin-top: 8px; display: block; }
+        }
+
+        @media (max-width: 768px) { 
+            body { flex-direction: column; } 
+            .sidebar { width: 100%; height: 50vh; min-width: 100%; } 
+            .main-content { padding: 16px; }
+            .budget-footer { flex-direction: column; gap: 16px; align-items: stretch; text-align: center; }
+            .action-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="header">
+            <div class="header-content">
+                <a href="index.html" class="header-brand" title="Voltar ao Painel">
+                    <svg class="header-logo-svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M 20 40 L 18 85 Q 35 92 52 82" />
+                        <path d="M 26 42 L 24 75 Q 35 81 48 74" />
+                        <path d="M 32 45 L 30 65 Q 38 69 46 67" />
+                        <path d="M 52 42 Q 62 32 72 40 L 78 58 Q 65 68 50 64" />
+                        <path d="M 52 74 Q 68 80 84 66 L 76 42" />
+                        <path d="M 54 84 Q 72 90 90 74 L 82 48" />
+                        <path d="M 28 18 L 44 23 L 44 30 L 50 35 L 60 58 L 44 46 L 38 42 L 32 28 Z" fill="currentColor" stroke="none" />
+                        <circle cx="44" cy="39" r="3.5" fill="var(--header-bg)" stroke="none" />
+                        <line x1="44" y1="42" x2="56" y2="55" stroke="var(--header-bg)" stroke-width="2.5" />
+                    </svg>
+                    <div class="header-text">
+                        <h2>Calculadora de Custas</h2>
+                        <div class="header-divider"></div>
+                        <p>Simulador de Emolumentos</p>
+                    </div>
+                </a>
+                <button class="btn-theme" onclick="toggleTheme()" id="theme-btn" title="Alternar Tema Claro/Escuro">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchCategoria('notas')" id="btn-notas">Tabelionato de Notas</button>
+                <button class="tab-btn" onclick="switchCategoria('civil')" id="btn-civil">Registro Civil</button>
+            </div>
+
+            <div class="form-group">
+                <label for="ato-select">Selecione o Ato / Serviço</label>
+                <select id="ato-select"></select>
+            </div>
+            
+            <div class="row">
+                <div class="form-group">
+                    <label>Valor Unitário (R$)</label>
+                    <input type="text" id="valor-display" disabled style="font-family: monospace; font-weight: bold;">
+                </div>
+                <div class="form-group qtd">
+                    <label for="qtd-input">Qtd.</label>
+                    <input type="number" id="qtd-input" value="1" min="1">
+                </div>
+            </div>
+
+            <button class="btn-add" onclick="adicionarAoOrcamento()">
+                <i class="fa-solid fa-plus"></i> Adicionar ao Orçamento
+            </button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="budget-card">
+            
+            <div class="print-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/bf/Coat_of_arms_of_Brazil.svg" alt="Brasão do Brasil">
+                <div class="print-header-text">
+                    <h1>REPÚBLICA FEDERATIVA DO BRASIL</h1>
+                    <h2>ESTADO DO PARANÁ</h2>
+                    <p>Município de Balsa Nova – Comarca de Campo Largo</p>
+                    <p>Distrito de São Luiz do Purunã</p>
+                    <span class="oficial">Sérgio Tadeu Pupo</span>
+                    <p>Oficial Registrador e Tabelião de Notas</p>
+                    <p style="margin-top: 6px;">Rua D. Pedro II, 5872 &nbsp;&nbsp;&nbsp; Fone: (41) 3636-9035</p>
+                </div>
+            </div>
+
+            <div class="budget-header">
+                <h3 class="budget-title"><i class="fa-solid fa-file-invoice-dollar"></i> Orçamento Prévio</h3>
+                <span style="font-size: 0.85rem; color: var(--text-muted);" id="data-orcamento"></span>
+            </div>
+            
+            <div style="flex-grow: 1; overflow-y: auto;">
+                <table id="tabela-orcamento">
+                    <thead>
+                        <tr>
+                            <th>Ato / Descrição</th>
+                            <th style="text-align: center;">Qtd</th>
+                            <th style="text-align: right;">V. Unit</th>
+                            <th style="text-align: right;">Subtotal</th>
+                            <th class="td-acoes"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-itens"></tbody>
+                </table>
+                <div id="empty-msg" style="text-align: center; color: var(--text-muted); padding: 40px 0; font-size: 0.9rem;">
+                    Nenhum ato adicionado ao orçamento.
+                </div>
+            </div>
+
+            <div class="budget-footer">
+                <div class="action-buttons">
+                    <button class="btn-action btn-clear" onclick="limparOrcamento()"><i class="fa-solid fa-trash"></i> Limpar</button>
+                    <button class="btn-action btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimir</button>
+                    <button class="btn-action btn-wpp" onclick="enviarWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar Cliente</button>
+                </div>
+                <div class="budget-total" style="text-align: right;">
+                    <h3>Total Estimado</h3>
+                    <div class="valor-final" id="valor-total">R$ 0,00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Item adicionado!</div>
+
+    <script>
+        const TABELAS = {
+            "notas": [
+                { nome: "Autenticação", valor: 8.42 },
+                { nome: "Autenticação + Cópia", valor: 8.92 },
+                { nome: "Reconhecimento Sem Valor Semelhança", valor: 9.05 },
+                { nome: "Reconhecimento Com Valor ou Verdadeiro", valor: 17.17 },
+                { nome: "Sinal Público", valor: 17.17 },
+                { nome: "Apostilamento de Haia", valor: 72.63 },
+                { nome: "Procuração e Substabelecimento", valor: 158.75 },
+                { nome: "Por outorgante ou outorgado (Procuração)", valor: 3.96 },
+                { nome: "Certidão Procuração", valor: 15.84 },
+                { nome: "Certidão Escritura (primeira folha)", valor: 12.14 },
+                { nome: "Certidão Escritura (Página Adicional)", valor: 3.58 },
+                { nome: "Buscas (Por 10 anos ou fração)", valor: 2.48 },
+                { nome: "Testamento Público", valor: 770.55 },
+                { nome: "Testamento Cerrado", valor: 139.54 },
+                { nome: "Revogação de Testamento", valor: 399.37 },
+                { nome: "Divisão Amigável", valor: 399.37 },
+                { nome: "Unidade Adicional", valor: 15.84 },
+                { nome: "Ata Notarial com diligência 1ª Folha", valor: 490.27 },
+                { nome: "Ata Notarial realizada na serventia 1ª Folha", valor: 256.44 },
+                { nome: "Demais páginas (Ata Notarial)", valor: 12.15 },
+                { nome: "Escritura Sem Valor Declarado", valor: 262.04 },
+                { nome: "Escritura até R$ 15.512,00", valor: 408.62 },
+                { nome: "Escritura até R$ 18.282,00", valor: 476.55 },
+                { nome: "Escritura até R$ 21.052,00", valor: 544.49 },
+                { nome: "Escritura até R$ 23.822,00", valor: 612.42 },
+                { nome: "Escritura até R$ 26.592,00", valor: 680.36 },
+                { nome: "Escritura até R$ 29.362,00", valor: 748.29 },
+                { nome: "Escritura até R$ 32.132,00", valor: 816.23 },
+                { nome: "Escritura até R$ 34.902,00", valor: 884.15 },
+                { nome: "Escritura até R$ 37.672,00", valor: 952.09 },
+                { nome: "Escritura até R$ 40.442,00", valor: 1020.03 },
+                { nome: "Escritura até R$ 43.212,00", valor: 1087.96 },
+                { nome: "Escritura até R$ 45.982,00", valor: 1130.83 },
+                { nome: "Escritura até R$ 48.752,00", valor: 1197.26 },
+                { nome: "Escritura até R$ 51.522,00", valor: 1263.68 },
+                { nome: "Escritura até R$ 54.292,00", valor: 1330.11 },
+                { nome: "Escritura até R$ 57.062,00", valor: 1396.53 },
+                { nome: "Escritura até R$ 59.832,00", valor: 1462.96 },
+                { nome: "Escritura até R$ 62.602,00", valor: 1529.38 }
+            ],
+            "civil": [
+                { nome: "Habilitação Casamento (realizado nesta Serventia)", valor: 538.57 },
+                { nome: "Habilitação Casamento (realizado fora da Serventia)", valor: 749.54 },
+                { nome: "Habilitação Casamento (a ser realizado em outra Serventia)", valor: 366.86 },
+                { nome: "Assento Casamento (Habilitação de outra Serventia)", valor: 197.39 },
+                { nome: "Assento Casamento (Habilitação de outra, fora da Serventia)", valor: 408.36 },
+                { nome: "Dispensa Edital", valor: 22.14 },
+                { nome: "Registro de Editais de outro Ofício", valor: 16.10 },
+                { nome: "Inscrição Casamento Religioso", valor: 68.39 },
+                { nome: "Materialização de Documentos", valor: 60.83 },
+                { nome: "Averbação em Geral", valor: 44.23 },
+                { nome: "Anotação a Margem", valor: 11.87 },
+                { nome: "Retificação Administrativa", valor: 172.55 },
+                { nome: "Certidão Negativa", valor: 60.83 },
+                { nome: "Inteiro Teor", valor: 20.62 },
+                { nome: "Folha adicional", valor: 5.52 },
+                { nome: "Buscas (0 a 9 anos)", valor: 64.09 },
+                { nome: "Buscas (10 a 19 anos)", valor: 67.37 },
+                { nome: "Buscas (20 a 29 anos)", valor: 70.63 },
+                { nome: "Buscas (30 a 39 anos)", valor: 73.90 },
+                { nome: "Buscas (40 a 49 anos)", valor: 77.17 },
+                { nome: "Buscas (50 a 59 anos)", valor: 80.44 },
+                { nome: "Buscas (60 a 69 anos)", valor: 83.71 },
+                { nome: "Buscas (70 a 79 anos)", valor: 86.98 },
+                { nome: "Buscas (80 a 89 anos)", valor: 90.25 },
+                { nome: "Buscas (90 a 99 anos)", valor: 93.51 },
+                { nome: "Buscas (100 a 109 anos)", valor: 96.78 }
+            ]
+        };
+
+        let categoriaAtual = 'notas';
+        let itensOrcamento = [];
+
+        function toggleTheme() {
+            let theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-icon');
+            if (theme === 'dark') {
+                icon.className = 'fa-solid fa-sun';
+            } else {
+                icon.className = 'fa-solid fa-moon';
+            }
+        }
+
+        function formataRS(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function switchCategoria(cat) {
+            categoriaAtual = cat;
+            document.getElementById('btn-notas').classList.toggle('active', cat === 'notas');
+            document.getElementById('btn-civil').classList.toggle('active', cat === 'civil');
+            
+            const select = document.getElementById('ato-select');
+            select.innerHTML = '';
+            
+            TABELAS[cat].forEach((ato, index) => {
+                let opt = document.createElement('option');
+                opt.value = index;
+                opt.text = ato.nome;
+                select.appendChild(opt);
+            });
+            
+            atualizarValorDisplay();
+        }
+
+        document.getElementById('ato-select').addEventListener('change', atualizarValorDisplay);
+
+        function atualizarValorDisplay() {
+            const index = document.getElementById('ato-select').value;
+            const ato = TABELAS[categoriaAtual][index];
+            if(ato) document.getElementById('valor-display').value = formataRS(ato.valor);
+        }
+
+        function adicionarAoOrcamento() {
+            const index = document.getElementById('ato-select').value;
+            const qtd = parseInt(document.getElementById('qtd-input').value);
+            const ato = TABELAS[categoriaAtual][index];
+            
+            if(!ato || qtd < 1) return;
+
+            itensOrcamento.push({
+                nome: ato.nome,
+                qtd: qtd,
+                valorUnit: ato.valor,
+                subtotal: ato.valor * qtd
+            });
+
+            renderizarOrcamento();
+            document.getElementById('qtd-input').value = 1; 
+            mostrarToast("Item adicionado ao orçamento!");
+        }
+
+        function removerItem(index) {
+            itensOrcamento.splice(index, 1);
+            renderizarOrcamento();
+        }
+
+        function limparOrcamento() {
+            if(itensOrcamento.length === 0) return;
+            if(confirm("Deseja apagar todos os itens do orçamento?")) {
+                itensOrcamento = [];
+                renderizarOrcamento();
+            }
+        }
+
+        function renderizarOrcamento() {
+            const tbody = document.getElementById('lista-itens');
+            const emptyMsg = document.getElementById('empty-msg');
+            tbody.innerHTML = '';
+            
+            let total = 0;
+
+            if (itensOrcamento.length === 0) {
+                emptyMsg.style.display = 'block';
+            } else {
+                emptyMsg.style.display = 'none';
+                itensOrcamento.forEach((item, i) => {
+                    total += item.subtotal;
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item.nome}</td>
+                        <td style="text-align: center; font-weight: 600;">${item.qtd}x</td>
+                        <td class="td-valor" style="text-align: right; color: var(--text-muted);">${formataRS(item.valorUnit)}</td>
+                        <td class="td-valor" style="text-align: right;">${formataRS(item.subtotal)}</td>
+                        <td class="td-acoes">
+                            <button class="btn-del" onclick="removerItem(${i})" title="Remover"><i class="fa-solid fa-xmark"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            document.getElementById('valor-total').innerText = formataRS(total);
+            
+            const hoje = new Date();
+            document.getElementById('data-orcamento').innerText = hoje.toLocaleDateString('pt-BR');
+        }
+
+        function enviarWhatsApp() {
+            if (itensOrcamento.length === 0) return alert("O orçamento está vazio!");
+            
+            let texto = `*Orçamento de Custas - Cartório São Luiz do Purunã*\n\n`;
+            let total = 0;
+
+            itensOrcamento.forEach(item => {
+                texto += `🔹 ${item.qtd}x ${item.nome}\n   Subtotal: ${formataRS(item.subtotal)}\n`;
+                total += item.subtotal;
+            });
+
+            texto += `\n*TOTAL ESTIMADO: ${formataRS(total)}*\n\n`;
+            texto += `_Valores sujeitos a conferência de documentação. Incluem taxas FUNDEP, ISS e Selos._`;
+
+            let wppUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+            window.open(wppUrl, '_blank');
+        }
+
+        function mostrarToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        window.onload = () => {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            updateThemeIcon(currentTheme);
+            switchCategoria('notas');
+        };
+    </script>
+</body>
+</html>

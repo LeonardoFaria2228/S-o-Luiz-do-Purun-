@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda de Sábados - Serviço Distrital de São Luiz do Purunã</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:wght@600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Variáveis de Cores (Tema Claro Padrão) */
+        :root {
+            --primary: #2d2a26; 
+            --primary-hover: #4a453f;
+            --accent: #8b7355; 
+            
+            --bg-color: #f4f4f4;
+            --body-grad-start: #ffffff;
+            --body-grad-end: #ebebeb;
+            
+            --card-bg: #ffffff;
+            --card-hover-bg: #fafafa;
+            
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #dddddd;
+            
+            --header-bg: #b5b5b5;
+            --header-text: #3b2f2f;
+            
+            --nav-bg: #f9f9f9;
+            --nav-hover: #eeeeee;
+            --nav-active-text: #ffffff;
+            
+            --icon-bg: #f4f4f4;
+            
+            --footer-bg: #dbdbdb;
+            --footer-text: #444444;
+
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+            --row-alt-bg: #f9f9f9;
+            --row-hover-bg: #f0ede8;
+            --input-bg: #ffffff;
+
+            /* Status Claro */
+            --status-pago-bg: #dcfce7;
+            --status-pago-text: #15803d;
+            --status-pago-border: #cbd5e1;
+            
+            --status-pendente-bg: #fee2e2;
+            --status-pendente-text: #b91c1c;
+            --status-pendente-border: #cbd5e1;
+            
+            --status-isento-bg: #e0f2fe;
+            --status-isento-text: #0369a1;
+            --status-isento-border: #cbd5e1;
+        }
+
+        /* Variáveis de Cores (Tema Escuro) */
+        [data-theme="dark"] {
+            --primary: #dcd0c2; 
+            --primary-hover: #ffffff;
+            --accent: #bc9c73; 
+            
+            --bg-color: #121212;
+            --body-grad-start: #1a1a1a;
+            --body-grad-end: #121212;
+            
+            --card-bg: #1e1e1e;
+            --card-hover-bg: #252525;
+            
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border-color: #333333;
+            
+            --header-bg: #161514;
+            --header-text: #e0e0e0;
+            
+            --nav-bg: #1a1a1a;
+            --nav-hover: #2a2a2a;
+            --nav-active-text: #121212;
+            
+            --icon-bg: #2a2a2a;
+            
+            --footer-bg: #161514;
+            --footer-text: #888888;
+
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
+
+            --row-alt-bg: #161616;
+            --row-hover-bg: #2a2a2a;
+            --input-bg: #121212;
+
+            /* Status Escuro */
+            --status-pago-bg: #14532d;
+            --status-pago-text: #4ade80;
+            --status-pago-border: #166534;
+            
+            --status-pendente-bg: #7f1d1d;
+            --status-pendente-text: #f87171;
+            --status-pendente-border: #991b1b;
+            
+            --status-isento-bg: #075985;
+            --status-isento-text: #38bdf8;
+            --status-isento-border: #0c4a6e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(circle at top right, var(--body-grad-start) 0%, var(--body-grad-end) 100%);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- BARRA TOPO DISCRETA --- */
+        .top-info-bar {
+            background-color: #1a1816;
+            color: #d1c7bd;
+            font-size: 0.75rem;
+            padding: 6px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .top-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .weather-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .top-info-item i {
+            color: #bc9c73;
+            font-size: 0.8rem;
+        }
+
+        .weather-divider {
+            color: #555;
+            margin: 0 2px;
+        }
+
+        /* --- CABEÇALHO PRINCIPAL --- */
+        .site-header {
+            background-color: var(--header-bg); 
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 3px solid var(--primary);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .header-titles {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .header-titles h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--header-text);
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+            transition: color 0.3s ease;
+        }
+
+        /* --- BARRA DE NAVEGAÇÃO --- */
+        .navbar {
+            background-color: var(--nav-bg);
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-item {
+            padding: 14px 24px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-item:first-child { border-left: 1px solid var(--border-color); }
+        .nav-item:hover { background-color: var(--nav-hover); }
+        .nav-item.active { background-color: var(--primary); color: var(--nav-active-text); }
+        .nav-item.wpp:hover { color: #25D366; }
+
+        .theme-toggle-btn {
+            cursor: pointer;
+        }
+
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .container {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 0 20px;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        /* Controls Bar */
+        .controls-bar {
+            background-color: var(--card-bg);
+            padding: 18px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent);
+        }
+
+        .controls-bar h2 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 9px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+
+        .btn-success { background-color: #16a34a; color: white; }
+        .btn-success:hover { background-color: #15803d; }
+        
+        .btn-warning { background-color: #f59e0b; color: white; border: 1px solid #d97706;}
+        .btn-warning:hover { background-color: #d97706; }
+
+        .btn-danger { background-color: #dc2626; color: white; padding: 4px 8px; font-size: 0.8rem; }
+        .btn-danger:hover { background-color: #b91c1c; }
+
+        /* Saturday Card */
+        .saturday-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+
+        .card-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-header input[type="date"] {
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        .card-header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Info Sub-bar */
+        .info-bar {
+            background-color: var(--card-hover-bg);
+            padding: 12px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.88rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-item label { font-weight: bold; color: var(--primary); }
+
+        .info-item input {
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            padding: 4px 8px;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 0.88rem;
+        }
+
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+
+        th {
+            background-color: var(--card-hover-bg);
+            color: var(--primary);
+            padding: 12px 10px;
+            text-align: left;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            font-weight: 700;
+        }
+
+        th.center, td.center { text-align: center; }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        tr:nth-child(even) { background-color: var(--row-alt-bg); }
+
+        td[contenteditable="true"] { outline: none; }
+        td[contenteditable="true"]:focus {
+            background-color: var(--row-hover-bg);
+            box-shadow: inset 0 0 0 2px var(--accent);
+            border-radius: 2px;
+        }
+
+        .time-col {
+            font-weight: bold;
+            color: var(--accent);
+            width: 90px;
+            background-color: var(--card-hover-bg);
+        }
+
+        select.status-select {
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        select.status-pago { background-color: var(--status-pago-bg); color: var(--status-pago-text); border: 1px solid var(--status-pago-border); }
+        select.status-pendente { background-color: var(--status-pendente-bg); color: var(--status-pendente-text); border: 1px solid var(--status-pendente-border); }
+        select.status-isento { background-color: var(--status-isento-bg); color: var(--status-isento-text); border: 1px solid var(--status-isento-border); }
+        
+        /* Save Indicator Notification */
+        .save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+        
+        .save-indicator.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* --- RODAPÉ --- */
+        .footer {
+            background-color: var(--footer-bg);
+            text-align: center;
+            padding: 16px;
+            color: var(--footer-text);
+            font-size: 0.8rem;
+            font-weight: 500;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Print Optimization */
+        @media print {
+            body { background: white !important; color: black !important; padding: 0; }
+            .controls-bar, .btn-danger, .no-print, .top-info-bar, .navbar, .save-indicator { display: none !important; }
+            .container { max-width: 100%; margin: 0; padding: 0; }
+            .saturday-card { background: white !important; box-shadow: none; border: 1px solid #94a3b8 !important; margin-bottom: 20mm; page-break-inside: avoid; }
+            .card-header { background-color: #2d2a26 !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .card-header input[type="date"] { border: none; background: transparent !important; color: white !important; font-weight: bold; }
+            th { background-color: #f1f5f9 !important; color: #2d2a26 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .info-bar { background-color: #f8fafc !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .info-item label { color: #2d2a26 !important; }
+            .info-item input { border: none; background: transparent !important; color: black !important; }
+            td { color: black !important; border-color: #cbd5e1 !important; }
+            tr:nth-child(even) { background-color: #f8fafc !important; }
+            .time-col { background-color: #f1f5f9 !important; color: #8b7355 !important; }
+            select { appearance: none; -webkit-appearance: none; border: none !important; background: transparent !important; color: black !important; }
+            tr { page-break-inside: avoid; }
+        }
+
+        @media (max-width: 768px) {
+            .top-info-bar { justify-content: center; }
+            .weather-container { justify-content: center; }
+            .weather-divider { display: none; }
+            .site-header { padding: 20px 15px; }
+            .header-titles h1 { font-size: 2rem; }
+            .navbar { flex-wrap: wrap; }
+            .nav-item { flex: 1 1 auto; text-align: center; justify-content: center; border: 1px solid var(--border-color); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Topo Discreto: Data, Hora e Clima -->
+    <div class="top-info-bar">
+        <div class="top-info-item">
+            <i class="fa-regular fa-clock"></i>
+            <span id="datetime-display">Sáb, 29 de ago. de 2026, 01:48:39</span>
+        </div>
+        <div class="top-info-item weather-container">
+            <i class="fa-solid fa-cloud-sun"></i>
+            <span id="weather-bn">Balsa Nova: --°C (Amanhã: --°C)</span>
+            <span class="weather-divider">|</span>
+            <span id="weather-cl">Campo Largo: --°C (Amanhã: --°C)</span>
+        </div>
+    </div>
+
+    <!-- Cabeçalho Centralizado -->
+    <header class="site-header">
+        <div class="header-titles">
+            <h1>Serviço Distrital de<br>São Luiz do Purunã</h1>
+        </div>
+    </header>
+
+    <!-- Barra de Navegação -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-item">Portal Interno (Ferramentas)</a>
+        <a href="#" class="nav-item active">Agenda de Sábados</a>
+        <a href="https://www.cartoriopuruna.com.br/" target="_blank" class="nav-item">
+            Acessar Site Oficial <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i>
+        </a>
+        <a href="https://wa.me/5541987185555" target="_blank" class="nav-item wpp">
+            <i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 1.1rem;"></i> WhatsApp
+        </a>
+        <a href="#" class="nav-item theme-toggle-btn" id="theme-toggle" title="Alternar Tema Claro/Escuro">
+            <i class="fa-solid fa-sun"></i>
+        </a>
+    </nav>
+
+    <!-- Área de Conteúdo -->
+    <div class="container">
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+            <h2><i class="fa-solid fa-calendar-days" style="color: var(--accent);"></i> Gerenciador de Agendamentos dos Sábados</h2>
+            <div class="btn-group">
+                <button class="btn-primary" onclick="addSaturday()">➕ Novo Sábado</button>
+                <button class="btn-warning" onclick="saveToFile()"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button>
+                <button class="btn-success" onclick="window.print()">🖨️ Imprimir Agenda</button>
+            </div>
+        </div>
+
+        <!-- Container for Saturday Cards -->
+        <div id="saturdays-container"><div class="saturday-card">
+                <div class="card-header">
+                    <div class="card-header-title">
+                        📅 Agendamento de Sábado: 
+                        <input type="date" class="date-input" value="" onchange="autoSaveLocal()">
+                    </div>
+                    <button class="btn-danger no-print" onclick="removeSaturday(this)">🗑️ Excluir Dia</button>
+                </div>
+                <div class="info-bar">
+                    <div class="info-item">
+                        <label>Horário:</label>
+                        <span>09:00 às 11:00</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Responsável:</label>
+                        <input type="text" class="escrevente-input" placeholder="Nome do escrevente" value="" onblur="autoSaveLocal()">
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="center">Horário</th>
+                            <th>Nome do Cliente / Solicitante</th>
+                            <th class="center">Telefone / Whats</th>
+                            <th>Serviço Solicitado</th>
+                            <th class="center">Status</th>
+                            <th>Observações / Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    <tr class="agenda-row">
+                        <td class="center time-col time-cell">09:00</td>
+                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()">Joao</td>
+                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
+                        <td class="center">
+                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
+                                <option value="Pendente" selected="">Pendente</option>
+                                <option value="Pago">Pago</option>
+                                <option value="Isento">Isento</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
+                    </tr>
+                
+                    <tr class="agenda-row">
+                        <td class="center time-col time-cell">09:15</td>
+                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
+                        <td class="center">
+                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
+                                <option value="Pendente" selected="">Pendente</option>
+                                <option value="Pago">Pago</option>
+                                <option value="Isento">Isento</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
+                    </tr>
+                
+                    <tr class="agenda-row">
+                        <td class="center time-col time-cell">09:30</td>
+                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
+                        <td class="center">
+                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
+                                <option value="Pendente" selected="">Pendente</option>
+                                <option value="Pago">Pago</option>
+                                <option value="Isento">Isento</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
+                    </tr>
+                
+                    <tr class="agenda-row">
+                        <td class="center time-col time-cell">09:45</td>
+                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
+                        <td class="center">
+                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
+                                <option value="Pendente" selected="">Pendente</option>
+                                <option value="Pago">Pago</option>
+                                <option value="Isento">Isento</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
+                    </tr>
+                
+                    <tr class="agenda-row">
+                        <td class="center time-col time-cell">10:00</td>
+                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
+                        <td class="center">
+                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
+                                <option value="Pendente" selected="">Pendente</option>
+                                <option value="Pago">Pago</option>
+                                <option value="Isento">Isento</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
+                    </tr>
+                
+                    <tr class="agenda-row">
+                        <td class="center time-col time-cell">10:15</td>
+                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
+                        <td class="center">
+                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
+                                <option value="Pendente" selected="">Pendente</option>
+                                <option value="Pago">Pago</option>
+                                <option value="Isento">Isento</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
+                    </tr>
+                
+                    <tr class="agenda-row">
+                        <td class="center time-col time-cell">10:30</td>
+                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
+                        <td class="center">
+                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
+                                <option value="Pendente" selected="">Pendente</option>
+                                <option value="Pago">Pago</option>
+                                <option value="Isento">Isento</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
+                    </tr>
+                
+                    <tr class="agenda-row">
+                        <td class="center time-col time-cell">10:45</td>
+                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()"></td>
+                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()"></td>
+                        <td class="center">
+                            <select class="status-select status-cell status-pendente" onchange="updateStatusClass(this)">
+                                <option value="Pendente" selected="">Pendente</option>
+                                <option value="Pago">Pago</option>
+                                <option value="Isento">Isento</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()"></td>
+                    </tr>
+                
+                    </tbody>
+                </table>
+            </div></div>
+    </div>
+    
+    <!-- Notification Toast -->
+    <div id="save-toast" class="save-indicator">
+        <i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Alterações salvas com sucesso!</span>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="footer">
+        Rua Dom Pedro II, 5872, São Caetano, Balsa Nova - Paraná - (41) 3696-9035 - (41) 98718-5555
+    </footer>
+    
+    <!-- DADOS DA AGENDA (JSON EMBUTIDO PARA SALVAMENTO PERMANENTE) -->
+    <script id="app-data" type="application/json">[
+  {
+    "date": "",
+    "escrevente": "",
+    "rows": [
+      {
+        "time": "09:00",
+        "client": "Joao",
+        "phone": "",
+        "service": "",
+        "status": "Pendente",
+        "obs": ""
+      },
+      {
+        "time": "09:15",
+        "client": "",
+        "phone": "",
+        "service": "",
+        "status": "Pendente",
+        "obs": ""
+      },
+      {
+        "time": "09:30",
+        "client": "",
+        "phone": "",
+        "service": "",
+        "status": "Pendente",
+        "obs": ""
+      },
+      {
+        "time": "09:45",
+        "client": "",
+        "phone": "",
+        "service": "",
+        "status": "Pendente",
+        "obs": ""
+      },
+      {
+        "time": "10:00",
+        "client": "",
+        "phone": "",
+        "service": "",
+        "status": "Pendente",
+        "obs": ""
+      },
+      {
+        "time": "10:15",
+        "client": "",
+        "phone": "",
+        "service": "",
+        "status": "Pendente",
+        "obs": ""
+      },
+      {
+        "time": "10:30",
+        "client": "",
+        "phone": "",
+        "service": "",
+        "status": "Pendente",
+        "obs": ""
+      },
+      {
+        "time": "10:45",
+        "client": "",
+        "phone": "",
+        "service": "",
+        "status": "Pendente",
+        "obs": ""
+      }
+    ]
+  }
+]</script>
+
+    <!-- Scripts JavaScript -->
+    <script>
+        // --- 1. Controle de Tema Claro/Escuro ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = themeToggleBtn.querySelector('i');
+        
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+
+        themeToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault(); 
+            let theme = document.documentElement.getAttribute('data-theme');
+            theme = theme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        });
+
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun'); 
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon'); 
+            }
+        }
+
+        // --- 2. Atualizador de Data e Hora ---
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const formatted = now.toLocaleDateString('pt-BR', options).replace('.', '');
+            document.getElementById('datetime-display').textContent = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // --- 3. Lógica da Agenda e Salvamento ---
+        const timeSlots = ["09:00", "09:15", "09:30", "09:45", "10:00", "10:15", "10:30", "10:45"];
+        const LOCAL_STORAGE_KEY = 'cartorio_agenda_sabados_v2';
+
+        function updateStatusClass(selectElement) {
+            selectElement.className = 'status-select status-cell';
+            if (selectElement.value === 'Pago') selectElement.classList.add('status-pago');
+            else if (selectElement.value === 'Pendente') selectElement.classList.add('status-pendente');
+            else if (selectElement.value === 'Isento') selectElement.classList.add('status-isento');
+            autoSaveLocal(); // backup silencioso
+        }
+
+        function createSaturdayCard(data = null) {
+            const card = document.createElement('div');
+            card.className = 'saturday-card';
+
+            const dateValue = data ? data.date : '';
+            const escreventeValue = data ? data.escrevente : '';
+
+            let rowsHtml = '';
+            const rowsData = data && data.rows && data.rows.length > 0 ? data.rows : timeSlots.map(t => ({ time: t, client: '', phone: '', service: '', status: 'Pendente', obs: '' }));
+
+            rowsData.forEach(r => {
+                const statusPago = r.status === 'Pago' ? 'selected' : '';
+                const statusPendente = r.status === 'Pendente' ? 'selected' : '';
+                const statusIsento = r.status === 'Isento' ? 'selected' : '';
+
+                rowsHtml += `
+                    <tr class="agenda-row">
+                        <td class="center time-col time-cell">${r.time}</td>
+                        <td contenteditable="true" placeholder="Nome do cliente" class="client-cell" onblur="autoSaveLocal()">${r.client}</td>
+                        <td contenteditable="true" placeholder="(00) 00000-0000" class="center phone-cell" onblur="autoSaveLocal()">${r.phone}</td>
+                        <td contenteditable="true" placeholder="Ex: Procuração / Firma" class="service-cell" onblur="autoSaveLocal()">${r.service}</td>
+                        <td class="center">
+                            <select class="status-select status-cell" onchange="updateStatusClass(this)">
+                                <option value="Pendente" ${statusPendente}>Pendente</option>
+                                <option value="Pago" ${statusPago}>Pago</option>
+                                <option value="Isento" ${statusIsento}>Isento</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true" placeholder="Anotações e detalhes..." class="obs-cell" onblur="autoSaveLocal()">${r.obs}</td>
+                    </tr>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-header-title">
+                        📅 Agendamento de Sábado: 
+                        <input type="date" class="date-input" value="${dateValue}" onchange="autoSaveLocal()">
+                    </div>
+                    <button class="btn-danger no-print" onclick="removeSaturday(this)">🗑️ Excluir Dia</button>
+                </div>
+                <div class="info-bar">
+                    <div class="info-item">
+                        <label>Horário:</label>
+                        <span>09:00 às 11:00</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Responsável:</label>
+                        <input type="text" class="escrevente-input" placeholder="Nome do escrevente" value="${escreventeValue}" onblur="autoSaveLocal()">
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="center">Horário</th>
+                            <th>Nome do Cliente / Solicitante</th>
+                            <th class="center">Telefone / Whats</th>
+                            <th>Serviço Solicitado</th>
+                            <th class="center">Status</th>
+                            <th>Observações / Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+            `;
+
+            setTimeout(() => {
+                card.querySelectorAll('.status-select').forEach(select => updateStatusClass(select));
+            }, 0);
+
+            return card;
+        }
+
+        function addSaturday() {
+            const container = document.getElementById('saturdays-container');
+            container.appendChild(createSaturdayCard());
+            autoSaveLocal(); 
+        }
+
+        function removeSaturday(button) {
+            if (confirm('Tem certeza que deseja excluir toda a agenda deste sábado? Esta ação não pode ser desfeita.')) {
+                button.closest('.saturday-card').remove();
+                autoSaveLocal(); 
+            }
+        }
+
+        // Captura os dados do HTML visual
+        function gatherDataFromDOM() {
+            const container = document.getElementById('saturdays-container');
+            const cards = container.querySelectorAll('.saturday-card');
+            const savedData = [];
+
+            cards.forEach(card => {
+                const dateVal = card.querySelector('.date-input').value;
+                const escreventeVal = card.querySelector('.escrevente-input').value;
+                const rows = [];
+                const rowElements = card.querySelectorAll('.agenda-row');
+                
+                rowElements.forEach(row => {
+                    rows.push({
+                        time: row.querySelector('.time-cell').textContent.trim(),
+                        client: row.querySelector('.client-cell').textContent.trim(),
+                        phone: row.querySelector('.phone-cell').textContent.trim(),
+                        service: row.querySelector('.service-cell').textContent.trim(),
+                        status: row.querySelector('.status-cell').value,
+                        obs: row.querySelector('.obs-cell').textContent.trim()
+                    });
+                });
+                savedData.push({ date: dateVal, escrevente: escreventeVal, rows: rows });
+            });
+            return savedData;
+        }
+
+        // Backup Silencioso de Memória (ajuda se der erro de fechar a aba sem salvar fisicamente)
+        function autoSaveLocal() {
+            const data = gatherDataFromDOM();
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+            // Atualiza também o bloco JSON invisível no DOM
+            document.getElementById('app-data').textContent = JSON.stringify(data, null, 2);
+        }
+
+        // SALVAMENTO FÍSICO DEFINITIVO (Substitui o arquivo)
+        async function saveToFile() {
+            const savedData = gatherDataFromDOM();
+            
+            // Força a atualização do JSON invisível
+            document.getElementById('app-data').textContent = JSON.stringify(savedData, null, 2);
+            
+            // Pega todo o código HTML do arquivo
+            const htmlString = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+
+            try {
+                if (window.showSaveFilePicker) {
+                    // Chrome / Edge: permite regravar por cima do mesmo arquivo
+                    const fileHandle = await window.showSaveFilePicker({
+                        suggestedName: 'Agenda_Cartorio_Atualizada.html',
+                        types: [{ description: 'Arquivo HTML', accept: {'text/html': ['.html']} }]
+                    });
+                    const writable = await fileHandle.createWritable();
+                    await writable.write(htmlString);
+                    await writable.close();
+                    showSaveToast("Arquivo atualizado com sucesso no computador!");
+                } else {
+                    // Outros navegadores: faz o download automático de uma nova cópia
+                    const blob = new Blob([htmlString], {type: "text/html;charset=utf-8"});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'Agenda_Cartorio_Atualizada.html';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showSaveToast("Download do arquivo atualizado concluído!");
+                }
+            } catch (e) {
+                console.error("Save cancelled:", e);
+                autoSaveLocal(); // garante que ficou pelo menos na memória
+                showSaveToast("Salvo na memória temporária do navegador!");
+            }
+        }
+
+        function loadData() {
+            let dataToLoad = null;
+            
+            // 1. Sempre prioriza ler do arquivo embutido (pois é o Salvo Físico)
+            const embeddedStr = document.getElementById('app-data').textContent;
+            try {
+                if (embeddedStr.trim() !== '') {
+                    dataToLoad = JSON.parse(embeddedStr);
+                }
+            } catch(e) {}
+            
+            // 2. Se o arquivo estiver vazio, tenta ler da memória temporária (localStorage)
+            if (!dataToLoad || dataToLoad.length === 0) {
+                const localStr = localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (localStr) {
+                    try { dataToLoad = JSON.parse(localStr); } catch(e) {}
+                }
+            }
+
+            const container = document.getElementById('saturdays-container');
+            container.innerHTML = ''; 
+            
+            if (dataToLoad && dataToLoad.length > 0) {
+                dataToLoad.forEach(d => { container.appendChild(createSaturdayCard(d)); });
+            } else {
+                addSaturday(); // Se tudo estiver vazio, cria 1 sabado novo
+            }
+        }
+
+        // Animação da notificação
+        function showSaveToast(message) {
+            const toast = document.getElementById('save-toast');
+            document.getElementById('toast-msg').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 4000);
+        }
+
+        // Atalho Ctrl+S para Salvar o Arquivo Físico
+        document.addEventListener('keydown', function(e) {
+            if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.key === 's') {
+                e.preventDefault();
+                saveToFile();
+            }
+        });
+
+        // Inicialização
+        window.onload = () => {
+            loadData();
+        };
+    </script>
+
+
+
+</body></html>

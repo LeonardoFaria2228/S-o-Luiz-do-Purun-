@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador CEP e Diligências - Cartório São Luiz do Purunã</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        /* Variáveis de Cores (Tema Claro Padrão - Alinhado ao Index) */
+        :root {
+            --primary: #2d2a26; 
+            --primary-hover: #4a453f;
+            --accent: #8b7355; 
+            --secondary: #059669; 
+            
+            --bg-color: #f4f4f4;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #dddddd;
+            
+            --footer-bg: #dbdbdb;
+            --tabs-bg: #e5e5e5;
+            
+            --header-bg: #b5b5b5;
+            --header-text: #3b2f2f;
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Variáveis de Cores (Tema Escuro - Alinhado ao Index) */
+        [data-theme="dark"] {
+            --primary: #dcd0c2; 
+            --primary-hover: #ffffff;
+            --accent: #bc9c73; 
+            --secondary: #10b981; 
+            
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --input-bg: #2a2a2a;
+            
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border-color: #333333;
+            
+            --footer-bg: #161514;
+            --tabs-bg: #2a2a2a;
+            
+            --header-bg: #161514;
+            --header-text: #e0e0e0;
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; width: 100vw; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease; }
+
+        .sidebar { width: 440px; min-width: 320px; background-color: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; z-index: 1000; overflow-y: auto; position: relative; transition: background-color 0.3s ease; }
+        
+        .header { padding: 22px 20px; background: var(--header-bg); color: var(--header-text); position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-md); border-bottom: 2px solid var(--primary); }
+        .header-content { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .header-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--header-text); }
+        .header-logo-svg { width: 44px; height: 44px; flex-shrink: 0; }
+        .header-text h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 800; color: var(--header-text); line-height: 1.2; margin-bottom: 2px; }
+        .header-divider { width: 100%; height: 2px; background: var(--accent); margin: 6px 0; border-radius: 2px; }
+        .header-text p { font-size: 0.75rem; opacity: 0.85; display: flex; align-items: center; gap: 5px; font-weight: 500; }
+
+        .btn-theme { background: rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color); color: var(--text-main); width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
+        .btn-theme:hover { background: var(--accent); color: white; }
+
+        .search-section { padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
+        .tabs { display: flex; background: var(--tabs-bg); padding: 3px; border-radius: 8px; margin-bottom: 16px; transition: background 0.3s; }
+        .tab-btn { flex: 1; padding: 8px 4px; border: none; background-color: transparent; border-radius: 6px; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: all 0.2s ease; font-size: 0.78rem; text-align: center; }
+        .tab-btn.active { background-color: var(--card-bg); color: var(--text-main); box-shadow: var(--shadow-sm); }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.78rem; font-weight: 600; margin-bottom: 5px; color: var(--text-main); }
+        .form-group input, .form-group select { width: 100%; padding: 9px 12px; background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 6px; outline: none; transition: all 0.2s; font-size: 0.88rem; color: var(--text-main); }
+        .form-group input:focus, .form-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.15); }
+        select option { background-color: var(--card-bg); color: var(--text-main); }
+
+        .btn-search { width: 100%; padding: 10px; background-color: var(--primary); color: var(--bg-color); border: none; border-radius: 6px; font-weight: 600; font-size: 0.88rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-search:hover { opacity: 0.9; }
+
+        .result-section { padding: 16px 20px; flex-grow: 1; background-color: var(--bg-color); transition: background-color 0.3s; }
+        .result-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
+        .config-conducao { font-size: 0.65rem; color: var(--text-muted); font-weight: 500; cursor: pointer; text-decoration: underline; }
+
+        .result-card { background: var(--card-bg); border: 1px solid var(--border-color); border-left: 4px solid var(--accent); border-radius: 8px; padding: 14px 16px; display: none; box-shadow: var(--shadow-sm); }
+        .result-card h3 { font-size: 0.92rem; margin-bottom: 12px; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; font-family: 'Playfair Display', serif; }
+        
+        .result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 10px; }
+        
+        .result-item { font-size: 0.85rem; display: flex; align-items: flex-start; gap: 8px; line-height: 1.3; }
+        .result-item.full-width { grid-column: span 2; }
+        
+        .result-item.highlight-box { grid-column: span 1; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--secondary); padding: 8px 10px; border-radius: 6px; align-items: center; }
+        .result-item.highlight-box.alert { background: rgba(217, 119, 6, 0.1); border-color: var(--accent); }
+        
+        .result-item i { color: var(--accent); margin-top: 2px; font-size: 0.82rem; width: 14px; text-align: center; flex-shrink: 0; }
+        .result-item.highlight-box i { color: var(--secondary); margin-top: 0; font-size: 1rem; }
+        .result-item.highlight-box.alert i { color: var(--accent); }
+        
+        .result-item-content { flex: 1; overflow: hidden; }
+        .result-item span.label { display: block; font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .result-item span.value { color: var(--text-main); font-weight: 500; word-break: break-word; }
+        .result-item span.sub-value { display: block; font-size: 0.7rem; color: var(--text-muted); font-family: monospace; margin-top: 2px; }
+
+        .action-buttons { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .btn-copy { background: var(--bg-color); border: 1px solid var(--border-color); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: 600; color: var(--text-main); transition: 0.2s; display: flex; align-items: center; gap: 4px; }
+        .btn-copy:hover { background: var(--border-color); }
+        .btn-close { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.95rem; padding: 2px 5px; border-radius: 4px; transition: 0.2s; }
+        .btn-close:hover { background: #fee2e2; color: #ef4444; }
+
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+        .btn-tool { display: flex; justify-content: center; align-items: center; gap: 6px; padding: 8px; color: white; text-decoration: none; border-radius: 6px; font-size: 0.75rem; font-weight: 600; transition: 0.2s; border: none; cursor: pointer; text-align: center; }
+        
+        .btn-gmaps { background-color: #4285F4; } .btn-gmaps:hover { background-color: #3367D6; }
+        .btn-wpp { background-color: #25D366; } .btn-wpp:hover { background-color: #1DA851; }
+        .btn-street { background-color: #F4B400; color: #000; } .btn-street:hover { background-color: #D39D00; }
+        .btn-print { background-color: #64748B; } .btn-print:hover { background-color: #475569; }
+
+        .cartorio-info { padding: 14px 20px; background-color: var(--footer-bg); border-top: 1px solid var(--border-color); font-size: 0.72rem; color: var(--text-muted); line-height: 1.45; transition: background-color 0.3s; }
+        .cartorio-info p { margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .cartorio-info i { color: var(--primary); font-size: 0.8rem; }
+
+        #map-container { flex-grow: 1; position: relative; height: 100%; }
+        #map { width: 100%; height: 100%; }
+        
+        .loading { display: none; text-align: center; margin-top: 12px; font-size: 0.82rem; color: var(--accent); font-weight: 600; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background-color: #ef4444; color: white; padding: 10px 16px; border-radius: 6px; display: none; z-index: 2000; max-width: 300px; font-size: 0.82rem; font-weight: 500; box-shadow: var(--shadow-md); }
+        .toast.success { background-color: var(--secondary); }
+
+        @media print {
+            * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
+            body { display: block; overflow: visible; height: auto; background-color: #fff !important; }
+            .sidebar { width: 100% !important; min-width: 100%; height: auto !important; box-shadow: none !important; position: static !important; overflow: visible !important; }
+            .search-section, .tabs, .header-brand svg, .btn-theme, .btn-close, .tools-grid, .action-buttons { display: none !important; }
+            .header { background: #fff !important; color: #000 !important; padding: 10px 0 !important; box-shadow: none !important; border-bottom: 2px solid #000; }
+            .header-text h2 { color: #000 !important; font-size: 1.5rem !important; }
+            .header-text p { color: #333 !important; }
+            .header-divider { background: #000 !important; }
+            .result-section { padding: 10px 0 !important; background: #fff !important; }
+            .result-card { box-shadow: none !important; border: 1px solid #ccc !important; padding: 10px !important; }
+            .result-item.highlight-box { border: 1px solid #000 !important; background: transparent !important; }
+            #map-container { position: relative; height: 500px !important; width: 100% !important; display: block !important; margin-top: 20px; border: 1px solid #ccc; page-break-inside: avoid; }
+            .cartorio-info { display: block !important; border: none; background: transparent; margin-top: 20px; font-size: 0.9rem; }
+        }
+
+        @media (max-width: 768px) { 
+            body { flex-direction: column; } 
+            .sidebar { width: 100%; height: 55vh; min-width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); } 
+            #map-container { width: 100%; height: 45vh; } 
+            .header { padding: 14px 16px; }
+            .header-text h2 { font-size: 1rem; }
+            .search-section, .result-section { padding: 12px 16px; }
+            .result-grid { grid-template-columns: 1fr; } 
+            .result-item.full-width, .result-item.highlight-box { grid-column: span 1; }
+            .cartorio-info { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="header">
+            <div class="header-content">
+                <a href="index.html" class="header-brand" title="Voltar ao Painel">
+                    <svg class="header-logo-svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M 20 40 L 18 85 Q 35 92 52 82" />
+                        <path d="M 26 42 L 24 75 Q 35 81 48 74" />
+                        <path d="M 32 45 L 30 65 Q 38 69 46 67" />
+                        <path d="M 52 42 Q 62 32 72 40 L 78 58 Q 65 68 50 64" />
+                        <path d="M 52 74 Q 68 80 84 66 L 76 42" />
+                        <path d="M 54 84 Q 72 90 90 74 L 82 48" />
+                        <path d="M 28 18 L 44 23 L 44 30 L 50 35 L 60 58 L 44 46 L 38 42 L 32 28 Z" fill="currentColor" stroke="none" />
+                        <circle cx="44" cy="39" r="3.5" fill="var(--header-bg)" stroke="none" />
+                        <line x1="44" y1="42" x2="56" y2="55" stroke="var(--header-bg)" stroke-width="2.5" />
+                    </svg>
+                    <div class="header-text">
+                        <h2>Serviço Distrital de<br>São Luiz do Purunã</h2>
+                        <div class="header-divider"></div>
+                        <p><i class="fa-solid fa-map-location-dot"></i> Logística e Geocodificação</p>
+                    </div>
+                </a>
+                <button class="btn-theme" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab(event, 'cep')">Por CEP</button>
+                <button class="tab-btn" onclick="switchTab(event, 'endereco')">Por Endereço</button>
+                <button class="tab-btn" onclick="switchTab(event, 'locais')">Locais (Rural)</button>
+            </div>
+            
+            <div id="form-cep">
+                <div class="form-group">
+                    <label for="cep-input">Digite o CEP</label>
+                    <input type="text" id="cep-input" placeholder="00000-000" maxlength="9" onkeyup="formatCEP(this)">
+                </div>
+                <button class="btn-search" onclick="searchByCEP()">
+                    <i class="fa-solid fa-magnifying-glass"></i> Buscar Endereço
+                </button>
+            </div>
+            
+            <div id="form-endereco" style="display: none;">
+                <div class="form-group">
+                    <label for="uf-input">Estado (UF)</label>
+                    <select id="uf-input">
+                        <option value="PR" selected>Paraná</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cidade-input">Cidade</label>
+                    <input type="text" id="cidade-input" value="Balsa Nova" placeholder="Ex: Balsa Nova">
+                </div>
+                <div class="form-group">
+                    <label for="rua-input">Rua / Logradouro</label>
+                    <input type="text" id="rua-input" placeholder="Ex: Dom Pedro II">
+                </div>
+                <button class="btn-search" onclick="searchByAddress()">
+                    <i class="fa-solid fa-magnifying-glass"></i> Buscar CEP
+                </button>
+            </div>
+
+            <div id="form-locais" style="display: none;">
+                <div class="form-group">
+                    <label for="local-input">Selecione o Loteamento / Área</label>
+                    <select id="local-input">
+                        <option value="">Selecione uma área registrada...</option>
+                        <option value="condominio_puruna">Condomínio Pousada Purunã</option>
+                        <option value="gleba_cristo">Gleba Cristo Redentor</option>
+                        <option value="estrada_tamandua">Estrada do Tamanduá - Sede</option>
+                    </select>
+                </div>
+                <button class="btn-search" onclick="searchCustomLocal()">
+                    <i class="fa-solid fa-map-location-dot"></i> Carregar Local
+                </button>
+            </div>
+
+            <div class="loading" id="loading">
+                <i class="fa-solid fa-circle-notch fa-spin"></i> Consultando base de dados...
+            </div>
+        </div>
+
+        <div class="result-section">
+            <h3 class="result-title">
+                Ordem de Serviço
+                <span class="config-conducao" onclick="configurarValorKm()"><i class="fa-solid fa-gear"></i> Configurar R$/km</span>
+            </h3>
+            
+            <div class="result-card" id="result-card">
+                <h3>
+                    <span style="font-weight: 700; color: var(--primary);"><i class="fa-solid fa-shield-halved" style="margin-right: 4px;"></i> Dados da Diligência</span>
+                    <div class="action-buttons">
+                        <button class="btn-copy" onclick="copyApenasCEP()" title="Copiar apenas o CEP"><i class="fa-solid fa-hashtag"></i> CEP</button>
+                        <button class="btn-close" onclick="closeResult()" title="Fechar"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </h3>
+                
+                <div class="result-grid">
+                    <div class="result-item full-width"><i class="fa-solid fa-map-pin"></i><div class="result-item-content"><span class="label">CEP Base</span><span class="value" id="res-cep" style="font-weight: 700; font-size: 1.1rem; color: var(--primary);">-</span></div></div>
+                    
+                    <div class="result-item highlight-box">
+                        <i class="fa-solid fa-route"></i>
+                        <div class="result-item-content">
+                            <span class="label" style="color: var(--secondary);">Trajeto Estimado</span>
+                            <span class="value" id="res-distancia" style="font-weight: 700;">Calculando...</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-item highlight-box alert">
+                        <i class="fa-solid fa-car"></i>
+                        <div class="result-item-content">
+                            <span class="label" style="color: var(--accent);">Custas (Ida e Volta)</span>
+                            <span class="value" id="res-conducao" style="font-weight: 700;">Calculando...</span>
+                        </div>
+                    </div>
+
+                    <div class="result-item full-width"><i class="fa-solid fa-road"></i><div class="result-item-content"><span class="label">Logradouro</span><span class="value" id="res-rua">-</span></div></div>
+                    <div class="result-item full-width" id="item-complemento" style="display: none;"><i class="fa-solid fa-circle-plus"></i><div class="result-item-content"><span class="label">Complemento</span><span class="value" id="res-complemento">-</span></div></div>
+                    
+                    <div class="result-item"><i class="fa-solid fa-tree-city"></i><div class="result-item-content"><span class="label">Bairro</span><span class="value" id="res-bairro">-</span></div></div>
+                    <div class="result-item"><i class="fa-solid fa-building-columns"></i><div class="result-item-content"><span class="label">Cidade / Estado</span><span class="value"><span id="res-cidade">-</span> / <span id="res-uf">-</span></span></div></div>
+
+                    <div class="result-item full-width">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                        <div class="result-item-content">
+                            <span class="label">Coordenadas (Decimal e DMS)</span>
+                            <span class="value" id="res-coords" style="font-family: monospace;">Buscando mapa...</span>
+                            <span class="sub-value" id="res-coords-dms"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tools-grid">
+                    <a href="#" id="gmaps-route-link" target="_blank" class="btn-tool btn-gmaps"><i class="fa-solid fa-location-arrow"></i> Navegar (GPS)</a>
+                    <a href="#" id="street-view-link" target="_blank" class="btn-tool btn-street"><i class="fa-solid fa-street-view"></i> Fachada / Rua</a>
+                    <button class="btn-tool btn-wpp" onclick="sendWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar ao Oficial</button>
+                    <button class="btn-tool btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimir Ordem</button>
+                </div>
+            </div>
+            
+            <div class="hint-text" id="instruction-text"><i class="fa-solid fa-circle-info"></i><div>Digite o endereço acima ou clique no mapa para gerar os dados de deslocamento.</div></div>
+        </div>
+        
+        <div class="cartorio-info">
+            <p><i class="fa-solid fa-phone"></i> (41) 3636-9035 / (41) 98718-5555</p>
+            <p><i class="fa-solid fa-envelope"></i> contato@cartoriopuruna.com.br</p>
+            <p><i class="fa-solid fa-location-dot"></i> R. Dom Pedro II, 5872, São Caetano - Balsa Nova/PR</p>
+        </div>
+    </div>
+
+    <div id="map-container"><div id="map"></div></div>
+    <div class="toast" id="toast">Notificação</div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        const CARTORIO_LAT = -25.46578;
+        const CARTORIO_LON = -49.57584;
+        let VALOR_POR_KM = parseFloat(localStorage.getItem('valor_km')) || 3.00;
+        let currentDiligenceData = {};
+
+        const LOCAIS_ESPECIAIS = {
+            "condominio_puruna": { logradouro: "Condomínio Pousada Purunã", bairro: "São Luiz do Purunã", localidade: "Balsa Nova", uf: "PR", cep: "83650-000", lat: -25.44850, lon: -49.69530 },
+            "gleba_cristo": { logradouro: "Gleba Cristo Redentor / Área Rural", bairro: "Zona Rural", localidade: "Balsa Nova", uf: "PR", cep: "83650-000", lat: -25.49500, lon: -49.61000 },
+            "estrada_tamandua": { logradouro: "Estrada do Tamanduá", bairro: "Tamanduá", localidade: "Balsa Nova", uf: "PR", cep: "83650-000", lat: -25.51200, lon: -49.65800 }
+        };
+
+        function configurarValorKm() {
+            let novoValor = prompt("Digite o valor cobrado por KM rodado (ex: 3.50):", VALOR_POR_KM.toFixed(2));
+            if (novoValor !== null && !isNaN(parseFloat(novoValor.replace(',','.')))) {
+                VALOR_POR_KM = parseFloat(novoValor.replace(',','.'));
+                localStorage.setItem('valor_km', VALOR_POR_KM);
+                showToast("Valor atualizado! Refaça a busca.", "success");
+            }
+        }
+
+        function toggleTheme() {
+            let theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-icon');
+            if (theme === 'dark') {
+                icon.className = 'fa-solid fa-sun';
+            } else {
+                icon.className = 'fa-solid fa-moon';
+            }
+        }
+
+        window.onload = function() {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            updateThemeIcon(currentTheme);
+        };
+
+        let map = L.map('map', { zoomControl: false }).setView([CARTORIO_LAT, CARTORIO_LON], 12);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+        let currentMarker = null;
+        
+        const cartorioMarker = L.marker([CARTORIO_LAT, CARTORIO_LON]).addTo(map).bindPopup("<b>Cartório S.L. Purunã (Base)</b>");
+
+        const mapaRuas = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap', maxZoom: 19 }).addTo(map);
+        const mapaSatelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles © Esri' });
+        L.control.layers({ "Mapa de Ruas": mapaRuas, "Satélite": mapaSatelite }, null, { position: 'topright' }).addTo(map);
+
+        function switchTab(e, tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            document.getElementById('form-cep').style.display = tab === 'cep' ? 'block' : 'none';
+            document.getElementById('form-endereco').style.display = tab === 'endereco' ? 'block' : 'none';
+            document.getElementById('form-locais').style.display = tab === 'locais' ? 'block' : 'none';
+        }
+
+        function formatCEP(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length > 5) value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+            input.value = value;
+            if (value.length === 9) searchByCEP();
+        }
+
+        function showLoading(show) { document.getElementById('loading').style.display = show ? 'block' : 'none'; }
+        function showToast(msg, type = 'error') {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg; toast.className = `toast ${type}`; toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 4000);
+        }
+
+        function convertToDMS(coordinate, type) {
+            let absolute = Math.abs(coordinate);
+            let degrees = Math.floor(absolute);
+            let minutesNotTruncated = (absolute - degrees) * 60;
+            let minutes = Math.floor(minutesNotTruncated);
+            let seconds = Math.floor((minutesNotTruncated - minutes) * 60);
+            let direction = type === 'lat' ? (coordinate >= 0 ? "N" : "S") : (coordinate >= 0 ? "E" : "W");
+            return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+        }
+
+        function fillResultCard(dados) {
+            currentDiligenceData.rua = dados.logradouro || 'Sem logradouro';
+            currentDiligenceData.bairro = dados.bairro || 'Não informado';
+            currentDiligenceData.cidade = dados.localidade || 'Não informado';
+            currentDiligenceData.uf = dados.uf || '-';
+            currentDiligenceData.cep = dados.cep || 'Não informado';
+
+            document.getElementById('res-cep').innerText = currentDiligenceData.cep;
+            document.getElementById('res-rua').innerText = currentDiligenceData.rua;
+            document.getElementById('res-bairro').innerText = currentDiligenceData.bairro;
+            document.getElementById('res-cidade').innerText = currentDiligenceData.cidade;
+            document.getElementById('res-uf').innerText = currentDiligenceData.uf;
+            
+            document.getElementById('res-coords').innerText = "Calculando...";
+            document.getElementById('res-coords-dms').innerText = "";
+            document.getElementById('res-distancia').innerText = "Calculando...";
+            document.getElementById('res-conducao').innerText = "Calculando...";
+            
+            document.getElementById('result-card').style.display = 'block';
+            document.getElementById('instruction-text').style.display = 'none';
+        }
+
+        function closeResult() {
+            document.getElementById('result-card').style.display = 'none';
+            document.getElementById('instruction-text').style.display = 'flex';
+            if (currentMarker) { map.removeLayer(currentMarker); currentMarker = null; }
+        }
+
+        async function calcularDistanciaEConducao(lat, lon) {
+            try {
+                let res = await fetch(`https://router.project-osrm.org/route/v1/driving/${CARTORIO_LON},${CARTORIO_LAT};${lon},${lat}?overview=false`);
+                let data = await res.json();
+                
+                if (data.routes && data.routes.length > 0) {
+                    let distanceKm = (data.routes[0].distance / 1000);
+                    let durationMin = Math.round(data.routes[0].duration / 60);
+                    exibirCustos(distanceKm, durationMin, true);
+                } else {
+                    calcularDistanciaLinhaReta(lat, lon);
+                }
+            } catch (error) {
+                calcularDistanciaLinhaReta(lat, lon);
+            }
+        }
+
+        function calcularDistanciaLinhaReta(lat, lon) {
+            let pontoPesquisado = L.latLng(lat, lon);
+            let pontoCartorio = L.latLng(CARTORIO_LAT, CARTORIO_LON);
+            let distanceKm = (pontoPesquisado.distanceTo(pontoCartorio) / 1000);
+            let estimativaMin = Math.round(distanceKm * 1.5); 
+            exibirCustos(distanceKm, estimativaMin, false);
+        }
+
+        function exibirCustos(distanceKm, durationMin, isRotaReal) {
+            let labelTempo = isRotaReal ? "Carro" : "Linha Reta";
+            document.getElementById('res-distancia').innerText = `${distanceKm.toFixed(1)} km (~${durationMin} min)`;
+            
+            let distanciaTotalIdaVolta = distanceKm * 2;
+            let valorConducao = distanciaTotalIdaVolta * VALOR_POR_KM;
+            document.getElementById('res-conducao').innerText = `R$ ${valorConducao.toFixed(2).replace('.', ',')} (Total: ${distanciaTotalIdaVolta.toFixed(1)} km)`;
+            
+            currentDiligenceData.distancia = distanceKm.toFixed(1);
+            currentDiligenceData.tempo = durationMin;
+            currentDiligenceData.valor = valorConducao.toFixed(2).replace('.', ',');
+        }
+
+        async function searchByCEP() {
+            let cep = document.getElementById('cep-input').value.replace(/\D/g, '');
+            if (cep.length !== 8) return;
+            showLoading(true);
+            try {
+                let res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                let data = await res.json();
+                if (data.erro) throw new Error("CEP não encontrado.");
+                fillResultCard(data); await locateOnMap(data);
+            } catch (error) { showToast(error.message); } finally { showLoading(false); }
+        }
+
+        async function searchByAddress() {
+            let uf = document.getElementById('uf-input').value;
+            let cidade = document.getElementById('cidade-input').value.trim();
+            let rua = document.getElementById('rua-input').value.trim();
+            if (!uf || cidade.length < 3 || rua.length < 3) return showToast("Preencha UF, Cidade e Rua.");
+            showLoading(true);
+            try {
+                let res = await fetch(`https://viacep.com.br/ws/${uf}/${encodeURIComponent(cidade)}/${encodeURIComponent(rua)}/json/`);
+                let data = await res.json();
+                if (!data || data.length === 0 || data.erro) throw new Error("Endereço não encontrado.");
+                fillResultCard(data[0]); await locateOnMap(data[0]);
+            } catch (error) { showToast(error.message); } finally { showLoading(false); }
+        }
+        
+        function searchCustomLocal() {
+            let key = document.getElementById('local-input').value;
+            if (!key || !LOCAIS_ESPECIAIS[key]) return showToast("Selecione um local.");
+            let dados = LOCAIS_ESPECIAIS[key];
+            fillResultCard(dados);
+            map.flyTo([dados.lat, dados.lon], 15, { animate: true, duration: 1.2 });
+            renderMarker(dados.lat, dados.lon, dados);
+            atualizarCoordenadasERotas(dados.lat, dados.lon);
+        }
+
+        async function locateOnMap(dados) {
+            let queries = [
+                `${dados.logradouro}, ${dados.localidade}, ${dados.uf}, Brasil`,
+                `${dados.bairro}, ${dados.localidade}, ${dados.uf}, Brasil`,
+                `${dados.localidade}, ${dados.uf}, Brasil`
+            ];
+            let geoData = [];
+            for (let q of queries) {
+                try {
+                    let geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&accept-language=pt-BR`);
+                    geoData = await geoRes.json();
+                    if (geoData && geoData.length > 0) break;
+                } catch(e) {}
+            }
+            if (geoData && geoData.length > 0) {
+                let lat = parseFloat(geoData[0].lat), lon = parseFloat(geoData[0].lon);
+                map.flyTo([lat, lon], dados.logradouro ? 16 : 13);
+                renderMarker(lat, lon, dados);
+                atualizarCoordenadasERotas(lat, lon);
+            } else {
+                document.getElementById('res-coords').innerText = `Não mapeado pelo servidor`;
+            }
+        }
+
+        function renderMarker(lat, lon, dados) {
+            if (currentMarker) map.removeLayer(currentMarker);
+            currentMarker = L.marker([lat, lon], { draggable: true }).addTo(map)
+                .bindPopup(`<b>${dados.logradouro || dados.localidade}</b><br>Arraste o pino para refinar o local exato.`).openPopup();
+            
+            currentMarker.on('dragend', function() { 
+                let pos = currentMarker.getLatLng(); 
+                reverseGeocodeToCorreios(pos.lat, pos.lng); 
+            });
+        }
+
+        map.on('click', function(e) { reverseGeocodeToCorreios(e.latlng.lat, e.latlng.lng); });
+
+        function atualizarCoordenadasERotas(lat, lon) {
+            document.getElementById('res-coords').innerText = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+            document.getElementById('res-coords-dms').innerText = `(DMS: ${convertToDMS(lat, 'lat')}, ${convertToDMS(lon, 'lon')})`;
+            
+            let urlRotaMaps = `https://www.google.com/maps/dir/?api=1&origin=${CARTORIO_LAT},${CARTORIO_LON}&destination=${lat},${lon}`;
+            document.getElementById('gmaps-route-link').href = urlRotaMaps;
+            currentDiligenceData.linkGmaps = urlRotaMaps;
+            
+            let urlStreetView = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lon}`;
+            document.getElementById('street-view-link').href = urlStreetView;
+
+            calcularDistanciaEConducao(lat, lon);
+        }
+
+        async function reverseGeocodeToCorreios(lat, lng) {
+            showLoading(true);
+            try {
+                let geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&zoom=18&accept-language=pt-BR`);
+                let geoData = await geoRes.json();
+                
+                if (!geoData || geoData.error || !geoData.address) {
+                    let fallback = { cep: "Não mapeado", logradouro: "Coordenada Manual", bairro: "Área não mapeada", localidade: "Balsa Nova", uf: "PR" };
+                    fillResultCard(fallback); 
+                    renderMarker(lat, lng, fallback);
+                    atualizarCoordenadasERotas(lat, lng);
+                    return;
+                }
+
+                let addr = geoData.address;
+                let rua = addr.road || addr.pedestrian || 'Coordenada Manual';
+                let cidade = addr.city || addr.town || addr.village || addr.municipality || 'Balsa Nova';
+                let ufStr = addr.state || 'PR';
+                let uf = ufStr.toLowerCase().includes("parana") ? "PR" : ufStr;
+
+                if (rua.length >= 3 && rua !== 'Coordenada Manual') {
+                    try {
+                        let viaCepRes = await fetch(`https://viacep.com.br/ws/${uf}/${encodeURIComponent(cidade)}/${encodeURIComponent(rua)}/json/`);
+                        if (viaCepRes.ok) {
+                            let viaCepData = await viaCepRes.json();
+                            if (viaCepData && viaCepData.length > 0 && !viaCepData.erro) {
+                                fillResultCard(viaCepData[0]); 
+                                renderMarker(lat, lng, viaCepData[0]); 
+                                atualizarCoordenadasERotas(lat, lng);
+                                return; 
+                            }
+                        }
+                    } catch(e) { }
+                }
+                
+                let fallbackData = { 
+                    cep: addr.postcode || 'Não mapeado', 
+                    logradouro: rua, 
+                    bairro: addr.suburb || addr.neighbourhood || addr.hamlet || 'Zona Rural', 
+                    localidade: cidade, 
+                    uf: uf 
+                };
+                
+                fillResultCard(fallbackData); 
+                renderMarker(lat, lng, fallbackData);
+                atualizarCoordenadasERotas(lat, lng);
+                
+            } catch (error) { 
+                showToast("Erro ao processar clique no mapa."); 
+            } finally { 
+                showLoading(false); 
+            }
+        }
+
+        function sendWhatsApp() {
+            if (!currentDiligenceData.rua) return showToast("Nenhuma diligência pesquisada.");
+            let texto = `*Ordem de Serviço (Diligência)* 🚙\n\n` +
+                        `*Endereço:* ${currentDiligenceData.rua}, ${currentDiligenceData.bairro}, ${currentDiligenceData.cidade}-${currentDiligenceData.uf}\n` +
+                        `*CEP:* ${currentDiligenceData.cep}\n\n` +
+                        `*Deslocamento:* ${currentDiligenceData.distancia} km (Aprox. ${currentDiligenceData.tempo} min)\n` +
+                        `*Valor Estimado:* R$ ${currentDiligenceData.valor}\n\n` +
+                        `📍 *Iniciar Rota GPS:*\n${currentDiligenceData.linkGmaps}`;
+            
+            let wppUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+            window.open(wppUrl, '_blank');
+        }
+
+        function copyApenasCEP() {
+            let cep = document.getElementById('res-cep').innerText;
+            if (!cep || cep === '-' || cep === 'Não informado') return showToast("Nenhum CEP válido.");
+            navigator.clipboard.writeText(cep).then(() => showToast("CEP copiado!", "success"));
+        }
+    </script>
+</body>
+</html>
