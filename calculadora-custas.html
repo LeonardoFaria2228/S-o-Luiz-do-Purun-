@@ -661,8 +661,15 @@
             // 1. Adiciona a Escritura (se houver valor de imóvel)
             if (valImovel > 0) {
                 const escObj = obterEscrituraPorValor(valImovel);
+                
+                // Formata o nome para exibir a Escritura Base
+                let nomeEscritura = "Escritura Base";
+                if (escObj.desc) {
+                    nomeEscritura += `: ${escObj.desc}`;
+                }
+                
                 itensOrcamento.push({
-                    nome: escObj.desc,
+                    nome: nomeEscritura,
                     qtd: 1,
                     valorUnit: escObj.valor,
                     subtotal: escObj.valor
@@ -850,14 +857,12 @@
         function enviarWhatsApp() {
             if (itensOrcamento.length === 0) return alert("O orçamento está vazio!");
             
-            let texto = `Orçamento prévio - Cartório São Luiz do Purunã\n\n`;
+            let texto = `Orçamento prévio - Cartório São Luiz do Purunã\n`;
             let total = 0;
 
             itensOrcamento.forEach((item, index) => {
-                // Adiciona a numeração e o nome do item. Se for mais de 1, mostra a quantidade.
-                let prefixo = item.qtd > 1 ? `${item.qtd}x ` : `${index + 1} - `;
-                
-                texto += `${prefixo}${item.nome}\nSubtotal: ${formataRS(item.subtotal)}\n\n`;
+                let nomeFormatado = item.qtd > 1 ? `${item.nome} (${item.qtd}x)` : item.nome;
+                texto += `${index + 1} - ${nomeFormatado}\n\nSubtotal: ${formataRS(item.subtotal)}\n\n`;
                 total += item.subtotal;
             });
 

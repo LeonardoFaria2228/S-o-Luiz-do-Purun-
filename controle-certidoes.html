@@ -321,6 +321,12 @@
         .btn-status { background-color: var(--accent); }
         .btn-status:hover { filter: brightness(1.1); }
         
+        .btn-edit { background-color: #0ea5e9; }
+        .btn-edit:hover { filter: brightness(0.9); }
+
+        .btn-receipt { background-color: #64748b; }
+        .btn-receipt:hover { filter: brightness(0.9); }
+        
         .btn-delete { background-color: #d9534f; }
         .btn-delete:hover { filter: brightness(0.9); }
         
@@ -339,6 +345,31 @@
         }
         [data-theme="dark"] .valor-cell { color: #4ade80; }
         .valor-cell:hover { opacity: 0.7; text-decoration: underline; }
+        
+        /* Save Indicator Notification */
+        .save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+        
+        .save-indicator.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
         
         /* --- RODAPÉ --- */
         .footer {
@@ -432,7 +463,7 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="categoria">Categoria *</label>
-                        <select id="categoria" required onchange="atualizarTipos()">
+                        <select id="categoria" required onchange="window.atualizarTipos()">
                             <option value="">Selecione a Categoria...</option>
                             <option value="Registro Civil">Registro Civil</option>
                             <option value="Tabelionato de Notas">Tabelionato de Notas</option>
@@ -464,7 +495,8 @@
                     </div>
                 </div>
 
-                <div class="form-subtitle">Prazos, Valor e Status</div>
+                <!-- Adicionado o campo "Responsável" nesta grade -->
+                <div class="form-subtitle">Prazos, Valor, Status e Atendente</div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="data_pedido">Data do Pedido *</label>
@@ -486,6 +518,10 @@
                             <option value="concluido">Concluído</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="responsavel">Responsável <small>(Atendente)</small></label>
+                        <input type="text" id="responsavel" placeholder="Seu nome (Opcional)">
+                    </div>
                 </div>
 
                 <button type="submit" class="btn-submit"><i class="fa-solid fa-save"></i> Salvar Pedido de Certidão</button>
@@ -495,21 +531,61 @@
         <h2 class="section-title"><i class="fa-solid fa-list-check"></i> Pedidos Registrados</h2>
         
         <div class="search-container">
-            <input type="text" id="busca" placeholder="Pesquisar por nome, livro, tipo de certidão..." onkeyup="renderizarTabelas()">
+            <input type="text" id="busca" placeholder="Pesquisar por nome, livro, tipo de certidão..." onkeyup="window.renderizarTabelas()">
         </div>
 
         <!-- Container onde as tabelas separadas serão geradas dinamicamente -->
         <div id="tabelas-container"></div>
 
     </main>
+    
+    <!-- Notification Toast -->
+    <div id="save-toast" class="save-indicator">
+        <i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Sincronizado na nuvem! ☁️</span>
+    </div>
 
     <!-- Rodapé -->
     <footer class="footer">
         Rua Dom Pedro II, 5872, São Caetano, Balsa Nova - Paraná - (41) 3696-9035 - (41) 98718-5555
     </footer>
 
-    <!-- Scripts JavaScript -->
-    <script>
+    <!-- LÓGICA DO SISTEMA E SINCRONIZAÇÃO EM TEMPO REAL VIA FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Credenciais do seu Projeto no Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWk3yKgaQCsieRiQcbWMIcKFPAw2jFpvM",
+            authDomain: "agenda-cartorio-c42b5.firebaseapp.com",
+            databaseURL: "https://agenda-cartorio-c42b5-default-rtdb.firebaseio.com",
+            projectId: "agenda-cartorio-c42b5",
+            storageBucket: "agenda-cartorio-c42b5.firebasestorage.app",
+            messagingSenderId: "125918572476",
+            appId: "1:125918572476:web:fc1706bd62601f3d8c45b9",
+            measurementId: "G-01YC2HZJF5"
+        };
+
+        // Inicializa o Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        // Define o caminho no banco de dados para salvar as certidões
+        const certidoesRef = ref(db, 'certidoes/pedidos');
+
+        let pedidos = [];
+        let isUpdatingFromCloud = false;
+
+        // Expor funções para os atributos HTML funcionarem fora do escopo do module
+        window.atualizarTipos = atualizarTipos;
+        window.avisarWhatsApp = avisarWhatsApp;
+        window.editarValor = editarValor;
+        window.editarPedido = editarPedido;
+        window.gerarRecibo = gerarRecibo;
+        window.alterarStatus = alterarStatus;
+        window.removerPedido = removerPedido;
+        window.renderizarTabelas = renderizarTabelas;
+
         // --- GERENCIAMENTO DE TEMA (CLARO/ESCURO) ---
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIcon = themeToggleBtn.querySelector('i');
@@ -556,7 +632,39 @@
 
         fetchWeather();
 
-        // --- LÓGICA DE CERTIDÕES ---
+        // --- LÓGICA DE CERTIDÕES E FIREBASE ---
+        
+        // Salvamento Automático na Nuvem
+        function autoSaveToCloud() {
+            if (isUpdatingFromCloud) return; 
+            
+            set(certidoesRef, pedidos).then(() => {
+                showSaveToast("Sincronizado na nuvem! ☁️");
+            }).catch(err => {
+                console.error("Erro ao salvar:", err);
+                showSaveToast("Erro de conexão com o banco!");
+            });
+        }
+        
+        // Escutar alterações na Nuvem
+        onValue(certidoesRef, (snapshot) => {
+            isUpdatingFromCloud = true; 
+            const dataToLoad = snapshot.val();
+            
+            pedidos = dataToLoad ? dataToLoad : [];
+            renderizarTabelas();
+
+            setTimeout(() => { isUpdatingFromCloud = false; }, 300);
+        });
+        
+        // Notificação Toaster
+        function showSaveToast(message) {
+            const toast = document.getElementById('save-toast');
+            document.getElementById('toast-msg').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
+        }
+
         const tiposPorCategoria = {
             "Registro Civil": ["Certidão de Nascimento", "Certidão de Casamento", "Certidão de Óbito", "Certidão de Emancipação", "Outros"],
             "Tabelionato de Notas": ["Certidão de Escritura Pública", "Certidão de Procuração", "Certidão de Testamento", "Ata Notarial", "Outros"],
@@ -572,8 +680,6 @@
             "Protesto", 
             "Outros"
         ];
-
-        let pedidos = JSON.parse(localStorage.getItem('pedidosCertidaoCartorio')) || [];
 
         function atualizarTipos() {
             const cat = document.getElementById('categoria').value;
@@ -594,7 +700,6 @@
             return `${partes[2]}/${partes[1]}/${partes[0]}`;
         }
 
-        // Enviar aviso pelo WhatsApp com texto formatado para cópia fácil do CNPJ
         function avisarWhatsApp(index) {
             const pedido = pedidos[index];
             if (!pedido.telefone) {
@@ -607,7 +712,6 @@
                 telefoneLimpo = '55' + telefoneLimpo;
             }
 
-            // Mensagem formatada, agora SEM o emoji do cifrão
             let mensagem = `Olá, ${pedido.solicitante}!
 
 Sua ${pedido.tipo} solicitada neste Serviço Distrital de São Luiz do Purunã está Concluída.`;
@@ -637,9 +741,95 @@ Agradecemos seu pedido, qualquer dúvida estou a disposição.`;
             let novoValor = prompt('Informe o valor da certidão (Ex: 50,00):', pedidos[index].valor || '');
             if (novoValor !== null) {
                 pedidos[index].valor = novoValor.trim();
-                localStorage.setItem('pedidosCertidaoCartorio', JSON.stringify(pedidos));
+                autoSaveToCloud(); 
                 renderizarTabelas();
             }
+        }
+
+        function editarPedido(index) {
+            const pedido = pedidos[index];
+            
+            let novoTelefone = prompt('Informe ou atualize o Contato/WhatsApp:', pedido.telefone || '');
+            if (novoTelefone !== null) {
+                pedido.telefone = novoTelefone.trim();
+            }
+            
+            let novoValor = prompt('Informe ou atualize o valor da certidão (Ex: 45,90):', pedido.valor || '');
+            if (novoValor !== null) {
+                pedido.valor = novoValor.trim();
+            }
+
+            autoSaveToCloud();
+            renderizarTabelas();
+        }
+
+        // Função de Geração de Recibo em PDF com a Assinatura Discreta
+        function gerarRecibo(index) {
+            const pedido = pedidos[index];
+            const janela = window.open('', '_blank', 'width=800,height=600');
+            
+            const hoje = new Date().toLocaleDateString('pt-BR');
+            const valorFormatado = pedido.valor ? `R$ ${pedido.valor}` : 'R$ 0,00 (Não informado)';
+            
+            // Verifica se o responsável foi preenchido para exibi-lo discretamente
+            const nomeResponsavelHTML = pedido.responsavel 
+                ? `<div style="font-size: 12px; color: #777; margin-top: 5px; font-style: italic;">${pedido.responsavel}</div>` 
+                : '';
+            
+            const html = `
+                <html>
+                <head>
+                    <title>Recibo - ${pedido.solicitante}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
+                        .cabecalho { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+                        h1 { font-size: 24px; margin: 0 0 10px 0; }
+                        p { margin: 5px 0; line-height: 1.5; }
+                        .recibo-box { border: 1px solid #ccc; padding: 30px; border-radius: 8px; }
+                        .valor { font-size: 20px; font-weight: bold; margin: 20px 0; }
+                        .assinatura { margin-top: 60px; text-align: center; border-top: 1px solid #333; width: 300px; padding-top: 10px; display: inline-block; }
+                    </style>
+                </head>
+                <body>
+                    <div class="recibo-box">
+                        <div class="cabecalho">
+                            <h1>Serviço Distrital de São Luiz do Purunã</h1>
+                            <p>CNPJ: 49.346.899/0001-98</p>
+                            <p>Rua Dom Pedro II, 5872, São Caetano, Balsa Nova - PR</p>
+                            <p>Telefone: (41) 3696-9035 / (41) 98718-5555</p>
+                        </div>
+                        
+                        <h2 style="text-align: center;">RECIBO</h2>
+                        <div class="valor">Valor: ${valorFormatado}</div>
+                        
+                        <p>Recebemos de <strong>${pedido.solicitante}</strong>${pedido.telefone ? ` (Contato: ${pedido.telefone})` : ''}, a importância de ${valorFormatado}, referente à solicitação do documento abaixo descrito:</p>
+                        
+                        <ul style="line-height: 1.8;">
+                            <li><strong>Categoria:</strong> ${pedido.categoria}</li>
+                            <li><strong>Tipo de Certidão:</strong> ${pedido.tipo}</li>
+                            ${pedido.livro ? `<li><strong>Livro:</strong> ${pedido.livro}</li>` : ''}
+                            ${pedido.folhas ? `<li><strong>Folhas:</strong> ${pedido.folhas}</li>` : ''}
+                            <li><strong>Data do Pedido:</strong> ${formatarData(pedido.data_pedido)}</li>
+                        </ul>
+                        
+                        <p style="text-align: right; margin-top: 40px;">Balsa Nova, ${hoje}</p>
+                        
+                        <div style="text-align: center; margin-top: 70px;">
+                            <div class="assinatura">Assinatura do Responsável</div>
+                            ${nomeResponsavelHTML}
+                        </div>
+                    </div>
+                    
+                    <script>
+                        window.onload = function() { 
+                            window.print(); 
+                        }
+                    <\\/script>
+                </body>
+                </html>
+            `;
+            janela.document.write(html);
+            janela.document.close();
         }
 
         function alterarStatus(index) {
@@ -655,14 +845,14 @@ Agradecemos seu pedido, qualquer dúvida estou a disposição.`;
             }
             
             pedidos[index].status = novoStatus;
-            localStorage.setItem('pedidosCertidaoCartorio', JSON.stringify(pedidos));
+            autoSaveToCloud(); 
             renderizarTabelas();
         }
 
         function removerPedido(index) {
             if (confirm('Deseja realmente remover este pedido?')) {
                 pedidos.splice(index, 1);
-                localStorage.setItem('pedidosCertidaoCartorio', JSON.stringify(pedidos));
+                autoSaveToCloud(); 
                 renderizarTabelas();
             }
         }
@@ -704,7 +894,7 @@ Agradecemos seu pedido, qualquer dúvida estou a disposição.`;
                                 <th>Prazos</th>
                                 <th>Valor (R$)</th>
                                 <th>Status</th>
-                                <th>Ações</th>
+                                <th style="min-width: 150px;">Ações</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -715,21 +905,21 @@ Agradecemos seu pedido, qualquer dúvida estou a disposição.`;
                     pedidosDaCategoria.forEach(pedido => {
                         let detalhes = [];
                         if(pedido.livro) detalhes.push(`<b>L:</b> ${pedido.livro}`);
-                        if(pedido.folhas) push(`<b>F:</b> ${pedido.folhas}`);
+                        if(pedido.folhas) detalhes.push(`<b>F:</b> ${pedido.folhas}`);
                         if(pedido.data_ato) detalhes.push(`<b>Data:</b> ${formatarData(pedido.data_ato)}`);
 
                         let valorHTML = pedido.valor ? `R$ ${pedido.valor}` : `<span style="color: var(--text-muted); font-size: 0.8rem; font-weight: 400;"><i class="fa-solid fa-pen"></i> Add</span>`;
 
                         let btnWpp = '';
                         if (pedido.telefone) {
-                            btnWpp = `<button class="btn-action btn-wpp" onclick="avisarWhatsApp(${pedido.originalIndex})" title="Avisar via WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>`;
+                            btnWpp = `<button class="btn-action btn-wpp" onclick="window.avisarWhatsApp(${pedido.originalIndex})" title="Avisar via WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>`;
                         }
 
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>
                                 <strong>${pedido.solicitante}</strong>
-                                <div class="item-details">${pedido.telefone || 'Sem telefone'}</div>
+                                <div class="item-details">${pedido.telefone || '<span style="color:red">Sem telefone</span>'}</div>
                             </td>
                             <td>
                                 <div style="font-weight: 600;">${pedido.tipo}</div>
@@ -739,7 +929,7 @@ Agradecemos seu pedido, qualquer dúvida estou a disposição.`;
                                 <div>Ped: ${formatarData(pedido.data_pedido)}</div>
                                 <div style="color: var(--accent); font-weight: 600;">Prev: ${formatarData(pedido.data_previsao)}</div>
                             </td>
-                            <td class="valor-cell" onclick="editarValor(${pedido.originalIndex})" title="Clique para editar o valor">
+                            <td class="valor-cell" onclick="window.editarValor(${pedido.originalIndex})" title="Clique para editar apenas o valor">
                                 ${valorHTML}
                             </td>
                             <td>
@@ -747,10 +937,14 @@ Agradecemos seu pedido, qualquer dúvida estou a disposição.`;
                                     ${pedido.status.charAt(0).toUpperCase() + pedido.status.slice(1)}
                                 </span>
                             </td>
-                            <td style="white-space: nowrap;">
-                                ${btnWpp}
-                                <button class="btn-action btn-status" onclick="alterarStatus(${pedido.originalIndex})" title="Mudar Status"><i class="fa-solid fa-rotate"></i></button>
-                                <button class="btn-action btn-delete" onclick="removerPedido(${pedido.originalIndex})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                            <td>
+                                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                                    ${btnWpp}
+                                    <button class="btn-action btn-edit" onclick="window.editarPedido(${pedido.originalIndex})" title="Editar Valor ou Contato"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="btn-action btn-receipt" onclick="window.gerarRecibo(${pedido.originalIndex})" title="Gerar Recibo (Imprimir/PDF)"><i class="fa-solid fa-file-invoice-dollar"></i></button>
+                                    <button class="btn-action btn-status" onclick="window.alterarStatus(${pedido.originalIndex})" title="Mudar Status"><i class="fa-solid fa-rotate"></i></button>
+                                    <button class="btn-action btn-delete" onclick="window.removerPedido(${pedido.originalIndex})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </div>
                             </td>
                         `;
                         tbody.appendChild(tr);
@@ -780,10 +974,13 @@ Agradecemos seu pedido, qualquer dúvida estou a disposição.`;
                 data_pedido: document.getElementById('data_pedido').value,
                 data_previsao: document.getElementById('data_previsao').value,
                 valor: document.getElementById('valor_certidao').value,
-                status: document.getElementById('status').value
+                status: document.getElementById('status').value,
+                responsavel: document.getElementById('responsavel').value // NOVO DADO CAPTURADO
             };
             pedidos.push(novo);
-            localStorage.setItem('pedidosCertidaoCartorio', JSON.stringify(pedidos));
+            
+            autoSaveToCloud(); 
+            
             this.reset();
             document.getElementById('data_pedido').valueAsDate = new Date();
             renderizarTabelas();
